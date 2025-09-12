@@ -11,46 +11,72 @@
 
 When developing Python applications, you'll often need specific versions of libraries. Using virtual environments allows you to create isolated spaces for your projects, avoiding conflicts between different projects' dependencies.
 
+### Historical Context
+
+Before virtual environments existed, Python developers faced significant challenges:
+
+- **System-wide packages**: All packages were installed globally, causing version conflicts between projects
+- **Dependency hell**: Different projects requiring different versions of the same package
+- **Limited isolation**: No way to create project-specific environments
+
+The `virtualenv` tool was created in 2007 by Ian Bicking to solve these problems. Later, Python 3.3+ integrated this functionality directly as the `venv` module, making environment isolation a standard practice.
+
 ## Prerequisites
 - Python 3.6+ installed on your system
 - Terminal/Command Prompt access
+- VS Code (recommended)
 
 ## Part 1: Creating Your First Virtual Environment
 
-### Task 1.1: Create a Virtual Environment
+### Task 1.1: Create a Virtual Environment for Our Calculator Project
 
-1. Create a new directory for your project:
+1. Create a new directory for the calculator project:
    ```bash
-   mkdir my_first_project
-   cd my_first_project
+   # All platforms
+   mkdir python_calculator
+   cd python_calculator
    ```
 
 2. Create a virtual environment:
    ```bash
-   # On macOS/Linux/Windows
+   # On Windows with WSL2, macOS, or Linux:
+   python3 -m venv venv
+   
+   # On Windows (PowerShell or Command Prompt):
    python -m venv venv
    ```
 
 3. Activate the virtual environment:
    ```bash
-   # On macOS/Linux
+   # On Windows with WSL2, macOS, or Linux:
    source venv/bin/activate
    
-   # On Windows
+   # On Windows Command Prompt:
    venv\Scripts\activate
+   
+   # On Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
    ```
 
 4. Verify activation:
    ```bash
    # The command prompt should now show (venv) at the beginning
-   # Check Python location to confirm it's using the virtual environment
-   which python  # On Windows: where python
+   
+   # Check Python location (On Windows with WSL2, macOS, or Linux):
+   which python
+   
+   # Check Python location (On Windows Command Prompt):
+   where python
+   
+   # Check Python location (On Windows PowerShell):
+   Get-Command python | Format-List
    ```
 
 ### Task 1.2: Deactivate and Reactivate
 
 1. Deactivate the virtual environment:
    ```bash
+   # All platforms
    deactivate
    ```
 
@@ -58,113 +84,201 @@ When developing Python applications, you'll often need specific versions of libr
 
 3. Reactivate the virtual environment:
    ```bash
-   # On macOS/Linux
+   # On Windows with WSL2, macOS, or Linux:
    source venv/bin/activate
    
-   # On Windows
+   # On Windows Command Prompt:
    venv\Scripts\activate
+   
+   # On Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
    ```
 
-## Part 2: Package Management with pip
+### VS Code Integration
 
-### Task 2.1: Installing Packages
+If you're using VS Code:
+
+1. Open your project folder in VS Code:
+   ```bash
+   # All platforms
+   code .
+   ```
+
+2. When prompted to select a Python interpreter, choose the one in your virtual environment:
+   - It should be labeled as `./venv/bin/python` (WSL2, macOS, Linux)
+   - Or `.\venv\Scripts\python.exe` (Windows)
+
+## Part 2: Package Management for the Calculator Project
+
+### Task 2.1: Installing Required Packages
 
 1. Ensure your virtual environment is activated.
 
-2. Install the `requests` package:
+2. Install pytest for testing:
    ```bash
-   pip install requests
+   # All platforms
+   pip install pytest
    ```
 
-3. List installed packages:
+3. Install pylint for code quality:
    ```bash
+   # All platforms
+   pip install pylint
+   ```
+
+4. List installed packages:
+   ```bash
+   # All platforms
    pip list
    ```
 
-4. Install a specific version:
-   ```bash
-   pip install requests==2.25.1
+### Task 2.2: Setting Up the Calculator Project Structure
+
+1. Create the following directory structure:
+   ```
+   python_calculator/
+   ├── src/
+   │   └── calculator/
+   │       ├── __init__.py
+   │       └── operations.py
+   ├── tests/
+   │   ├── __init__.py
+   │   └── test_operations.py
+   └── venv/
    ```
 
-5. Verify the version changed:
+   You can do this with these commands:
    ```bash
-   pip list
+   mkdir -p src/calculator tests
+   touch src/calculator/__init__.py
+   touch src/calculator/operations.py
+   touch tests/__init__.py
+   touch tests/test_operations.py
    ```
 
-### Task 2.2: Using Installed Packages
-
-1. Create a file named `weather.py`:
+2. Create a simple implementation in `src/calculator/operations.py`:
    ```python
-   import requests
+   """Basic arithmetic operations for the calculator."""
 
-   def get_weather(city):
-       """Get current weather for a city"""
-       api_key = "demo_key"  # For demo purposes only
-       url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-       
-       # Using the requests library we installed
-       response = requests.get(url)
-       
-       if response.status_code == 200:
-           data = response.json()
-           return f"The temperature in {city} is {data['main']['temp']}°C"
-       else:
-           return f"Error: Could not retrieve weather for {city}"
-
-   if __name__ == "__main__":
-       city = input("Enter a city name: ")
-       print(get_weather(city))
+   def add(a, b):
+       """Add two numbers and return the result."""
+       return a + b
    ```
 
-2. Run the script (without an API key, it will show an error but that's expected for this exercise):
+3. Create a simple test in `tests/test_operations.py`:
+   ```python
+   """Tests for calculator operations."""
+   
+   from calculator.operations import add
+
+   def test_add():
+       """Test the add function."""
+       assert add(1, 2) == 3
+       assert add(-1, 1) == 0
+       assert add(0, 0) == 0
+   ```
+
+4. Run the test to verify your setup:
    ```bash
-   python weather.py
+   # Navigate to the root of your project
+   cd python_calculator
+   
+   # Run pytest
+   python -m pytest
    ```
 
-## Part 3: Managing Dependencies
+   If you get an import error, create a `setup.py` file:
+   ```python
+   from setuptools import setup, find_packages
+
+   setup(
+       name="calculator",
+       version="0.1",
+       packages=find_packages(where="src"),
+       package_dir={"": "src"},
+   )
+   ```
+
+   Then install your package in development mode:
+   ```bash
+   pip install -e .
+   ```
+
+## Part 3: Managing Dependencies for the Calculator Project
 
 ### Task 3.1: Creating a requirements.txt File
 
 1. Generate a requirements.txt file:
    ```bash
+   # All platforms
    pip freeze > requirements.txt
    ```
 
 2. Examine the contents of requirements.txt:
    ```bash
-   cat requirements.txt  # On Windows: type requirements.txt
+   # On Windows with WSL2, macOS, or Linux:
+   cat requirements.txt
+   
+   # On Windows Command Prompt:
+   type requirements.txt
+   
+   # On Windows PowerShell:
+   Get-Content requirements.txt
    ```
 
-### Task 3.2: Using requirements.txt
+### Task 3.2: Using requirements.txt in a New Environment
 
 1. Deactivate and delete your virtual environment:
    ```bash
+   # All platforms
    deactivate
-   rm -rf venv  # On Windows: rmdir /s /q venv
+   
+   # On Windows with WSL2, macOS, or Linux:
+   rm -rf venv
+   
+   # On Windows Command Prompt:
+   rmdir /s /q venv
+   
+   # On Windows PowerShell:
+   Remove-Item -Recurse -Force venv
    ```
 
 2. Create a new virtual environment:
    ```bash
+   # On Windows with WSL2, macOS, or Linux:
+   python3 -m venv new_venv
+   
+   # On Windows (PowerShell or Command Prompt):
    python -m venv new_venv
    ```
 
 3. Activate the new environment:
    ```bash
-   # On macOS/Linux
+   # On Windows with WSL2, macOS, or Linux:
    source new_venv/bin/activate
    
-   # On Windows
+   # On Windows Command Prompt:
    new_venv\Scripts\activate
+   
+   # On Windows PowerShell:
+   .\new_venv\Scripts\Activate.ps1
    ```
 
 4. Install dependencies from requirements.txt:
    ```bash
+   # All platforms
    pip install -r requirements.txt
    ```
 
 5. Verify that all packages were installed:
    ```bash
+   # All platforms
    pip list
+   ```
+
+6. Run the tests again to verify everything works:
+   ```bash
+   python -m pytest
    ```
 
 ## Part 4: Advanced Package Management
@@ -173,11 +287,13 @@ When developing Python applications, you'll often need specific versions of libr
 
 1. Edit your requirements.txt file to use version specifiers:
    ```
-   requests>=2.25.0,<2.26.0
+   pytest>=7.0.0,<8.0.0
+   pylint>=2.15.0,<3.0.0
    ```
 
 2. Reinstall with the updated requirements:
    ```bash
+   # All platforms
    pip install -r requirements.txt
    ```
 
@@ -188,15 +304,59 @@ When developing Python applications, you'll often need specific versions of libr
    - `~=`: Compatible release
    - `!=`: Not equal to
 
-### Task 4.2: Exploring pip Commands
+### Task 4.2: Development vs. Production Dependencies
 
-1. Try each of these commands and document what they do:
-   ```bash
-   pip show requests
-   pip check
-   pip install --upgrade requests
-   pip uninstall requests
+In professional projects, it's common to separate development dependencies from production dependencies:
+
+1. Create a file named `requirements-dev.txt`:
    ```
+   # Include production dependencies
+   -r requirements.txt
+   
+   # Development-only dependencies
+   pytest>=7.0.0,<8.0.0
+   pylint>=2.15.0,<3.0.0
+   black>=22.8.0,<23.0.0  # Code formatter
+   ```
+
+2. Create a minimal `requirements.txt` with only what the calculator needs to run:
+   ```
+   # No external dependencies for basic calculator functionality
+   ```
+
+3. Install development dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+## Troubleshooting Common Issues
+
+### Issue: "Command not found: python" or "Command not found: python3"
+
+**Solution:**
+- **Windows:** Make sure Python is added to your PATH during installation
+- **macOS/Linux:** Use `python3` instead of `python`
+- **All platforms:** Verify the installation with `python --version` or `python3 --version`
+
+### Issue: "Error: Could not find a version that satisfies the requirement"
+
+**Solution:**
+- Check your internet connection
+- Verify the package name is correct
+- Try upgrading pip: `pip install --upgrade pip`
+
+### Issue: Virtual environment not activating properly
+
+**Solution:**
+- Make sure you're using the correct activation command for your platform
+- Check that the virtual environment was created successfully
+- Try creating a new virtual environment
+
+### Issue: "Permission denied" when installing packages
+
+**Solution:**
+- **macOS/Linux:** Use `pip install --user package_name` or use a virtual environment
+- **Windows:** Run Command Prompt or PowerShell as administrator
 
 ## Submission Requirements
 
@@ -205,17 +365,21 @@ Create a text file named `assignment1_answers.txt` with the following:
 1. Screenshots or terminal output showing:
    - Virtual environment activation
    - Package installation
-   - Running your weather.py script
+   - Running the calculator tests
    - Creating and using requirements.txt
 
 2. Written answers to these questions:
    - Why are virtual environments important for Python development?
    - What is the difference between `pip install package` and `pip install -r requirements.txt`?
-   - How would you specify that your project needs any version of requests that is at least 2.20.0 but less than 3.0.0?
+   - How would you specify that your project needs any version of pytest that is at least 7.0.0 but less than 8.0.0?
    - What happens if two projects on your computer need different versions of the same library?
+   - What are the key differences in virtual environment usage between Windows, macOS, and Linux/WSL2?
+   - How has Python package management evolved over time, and what problems did each evolution solve?
 
 ## Additional Resources
 
 - [Python Virtual Environments: A Primer](https://realpython.com/python-virtual-environments-a-primer/)
 - [pip User Guide](https://pip.pypa.io/en/stable/user_guide/)
 - [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/installing-packages/)
+- [VS Code Python Environment Setup](https://code.visualstudio.com/docs/python/environments)
+- [History of Python Packaging](https://blog.jaraco.com/a-history-of-python-packaging/)

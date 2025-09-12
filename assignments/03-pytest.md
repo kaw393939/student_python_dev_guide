@@ -11,29 +11,47 @@
 
 Testing is a critical part of software development. It helps ensure your code works as expected and continues to work as you make changes. Pytest is a popular testing framework for Python that makes it easy to write simple and scalable tests.
 
+### Historical Context
+
+Software testing has evolved significantly over the decades:
+- **1970s-1980s**: Testing was primarily manual and performed after development
+- **1990s**: Unit testing frameworks emerged, but were still cumbersome
+- **Early 2000s**: Test-Driven Development (TDD) gained popularity with frameworks like JUnit
+- **2004**: The Python `unittest` module was standardized, based on JUnit
+- **2010**: Pytest was created to simplify Python testing with less boilerplate code
+- **Present**: Testing is considered essential, with many organizations practicing TDD and CI/CD
+
+Pytest revolutionized Python testing by introducing fixtures, parameterization, and a simpler syntax compared to the standard `unittest` module.
+
 ## Prerequisites
 - Python 3.6+ installed
 - Virtual environment knowledge (from Assignment 1)
 - Understanding of code quality (from Assignment 2)
-- Basic Python programming skills
+- Calculator project from previous assignments
 
-## Part 1: Setting Up Pytest
+## Part 1: Setting Up Pytest for Our Calculator Project
 
 ### Task 1.1: Prepare Your Environment
 
-1. Create a new directory for this assignment:
+1. Navigate to your calculator project directory:
    ```bash
-   mkdir pytest_assignment
-   cd pytest_assignment
+   # All platforms
+   cd python_calculator
    ```
 
-2. Create and activate a virtual environment:
+2. Ensure your virtual environment is activated:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # On Windows with WSL2, macOS, or Linux:
+   source venv/bin/activate
+   
+   # On Windows Command Prompt:
+   venv\Scripts\activate
+   
+   # On Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
    ```
 
-3. Install pytest and pytest-cov:
+3. Install pytest and pytest-cov if not already installed:
    ```bash
    pip install pytest pytest-cov
    ```
@@ -47,19 +65,17 @@ Testing is a critical part of software development. It helps ensure your code wo
 
 2. Create a simple test file to verify pytest works:
    ```bash
-   echo "def test_passing(): assert True" > test_simple.py
+   echo "def test_passing(): assert True" > tests/test_simple.py
    pytest
    ```
 
-## Part 2: Writing Basic Tests
+## Part 2: Writing Tests for Our Calculator Operations
 
-### Task 2.1: Testing a Simple Function
+### Task 2.1: Testing Existing Calculator Operations
 
-1. Create a file named `math_operations.py` with the following content:
+1. You should already have the basic calculator operations in `src/calculator/operations.py` from previous assignments. Make sure they include:
 
    ```python
-   """Basic mathematical operations."""
-   
    def add(a, b):
        """Add two numbers and return the result."""
        return a + b
@@ -67,7 +83,65 @@ Testing is a critical part of software development. It helps ensure your code wo
    def subtract(a, b):
        """Subtract b from a and return the result."""
        return a - b
+   ```
+
+2. Create a test file `tests/test_operations.py`:
+
+   ```python
+   """Tests for calculator operations."""
+   from calculator.operations import add, subtract
+   import pytest
    
+   def test_add():
+       """Test the add function."""
+       assert add(1, 2) == 3
+       assert add(-1, 1) == 0
+       assert add(-1, -1) == -2
+   
+   def test_subtract():
+       """Test the subtract function."""
+       assert subtract(3, 2) == 1
+       assert subtract(2, 3) == -1
+       assert subtract(0, 0) == 0
+   ```
+
+3. Run the tests:
+   ```bash
+   # All platforms
+   pytest -v tests/test_operations.py
+   ```
+
+### Task 2.2: Test-Driven Development for Multiply and Divide
+
+1. Add new tests for multiplication and division that will initially fail:
+
+   ```python
+   def test_multiply():
+       """Test the multiply function."""
+       assert multiply(2, 3) == 6
+       assert multiply(-2, 3) == -6
+       assert multiply(0, 5) == 0
+   
+   def test_divide():
+       """Test the divide function."""
+       assert divide(6, 3) == 2
+       assert divide(5, 2) == 2.5
+       assert divide(-6, 2) == -3
+   
+   def test_divide_by_zero():
+       """Test that dividing by zero raises an exception."""
+       with pytest.raises(ZeroDivisionError):
+           divide(1, 0)
+   ```
+
+2. Run the tests to see them fail:
+   ```bash
+   pytest -v tests/test_operations.py
+   ```
+
+3. Now implement the missing functions in `src/calculator/operations.py`:
+
+   ```python
    def multiply(a, b):
        """Multiply two numbers and return the result."""
        return a * b
@@ -91,130 +165,104 @@ Testing is a critical part of software development. It helps ensure your code wo
        return a / b
    ```
 
-2. Create a test file named `test_math_operations.py`:
-
-   ```python
-   """Tests for math operations."""
-   from math_operations import add, subtract, multiply, divide
-   import pytest
-   
-   def test_add():
-       """Test the add function."""
-       assert add(1, 2) == 3
-       assert add(-1, 1) == 0
-       assert add(-1, -1) == -2
-   
-   def test_subtract():
-       """Test the subtract function."""
-       assert subtract(3, 2) == 1
-       assert subtract(2, 3) == -1
-       assert subtract(0, 0) == 0
-   
-   # Add tests for multiply and divide here
-   ```
-
-3. Complete the test file by adding tests for `multiply` and `divide` functions.
-
-4. Run the tests:
+4. Run the tests again to see them pass:
    ```bash
-   pytest
+   pytest -v tests/test_operations.py
    ```
 
-### Task 2.2: Testing Exceptions
+## Part 3: Creating a Calculator Class with Test Fixtures
 
-1. Add a test function to test the exception raised by the divide function:
+### Task 3.1: Implementing a Calculator Class
+
+1. Create a file `src/calculator/calculator.py`:
 
    ```python
-   def test_divide_by_zero():
-       """Test that dividing by zero raises an exception."""
-       with pytest.raises(ZeroDivisionError):
-           divide(1, 0)
-   ```
-
-2. Run the tests again:
-   ```bash
-   pytest
-   ```
-
-## Part 3: Advanced Testing Features
-
-### Task 3.1: Test Fixtures
-
-1. Create a file named `user.py`:
-
-   ```python
-   """User management module."""
+   """Calculator implementation that uses our operations."""
+   from .operations import add, subtract, multiply, divide
    
-   class User:
-       """Simple User class."""
+   class Calculator:
+       """Calculator class to perform arithmetic operations."""
        
-       def __init__(self, user_id, username, email):
-           """Initialize a user with id, username, and email."""
-           self.user_id = user_id
-           self.username = username
-           self.email = email
-           self.is_active = True
-           self.posts = []
+       def __init__(self):
+           """Initialize calculator with memory set to 0."""
+           self.memory = 0
        
-       def deactivate(self):
-           """Deactivate the user."""
-           self.is_active = False
+       def add(self, a, b):
+           """Add two numbers."""
+           return add(a, b)
        
-       def add_post(self, post):
-           """Add a post to the user's posts."""
-           self.posts.append(post)
-           return len(self.posts)
+       def subtract(self, a, b):
+           """Subtract b from a."""
+           return subtract(a, b)
        
-       def get_posts(self):
-           """Return the user's posts."""
-           return self.posts
+       def multiply(self, a, b):
+           """Multiply two numbers."""
+           return multiply(a, b)
+       
+       def divide(self, a, b):
+           """Divide a by b."""
+           return divide(a, b)
+       
+       def memory_store(self, value):
+           """Store a value in memory."""
+           self.memory = value
+       
+       def memory_recall(self):
+           """Recall the value from memory."""
+           return self.memory
+       
+       def memory_clear(self):
+           """Clear the memory."""
+           self.memory = 0
    ```
 
-2. Create a test file named `test_user.py`:
+### Task 3.2: Using Test Fixtures
+
+1. Create a test file `tests/test_calculator.py`:
 
    ```python
-   """Tests for the User class."""
+   """Tests for the Calculator class."""
    import pytest
-   from user import User
+   from calculator.calculator import Calculator
    
    @pytest.fixture
-   def active_user():
-       """Create and return an active user for testing."""
-       return User(1, "testuser", "test@example.com")
+   def calculator():
+       """Create and return a Calculator instance for testing."""
+       return Calculator()
    
-   @pytest.fixture
-   def inactive_user():
-       """Create and return an inactive user for testing."""
-       user = User(2, "inactive", "inactive@example.com")
-       user.deactivate()
-       return user
+   def test_calculator_initialization(calculator):
+       """Test that calculator initializes with memory set to 0."""
+       assert calculator.memory_recall() == 0
    
-   def test_user_initialization(active_user):
-       """Test that a user is initialized with the correct attributes."""
-       assert active_user.user_id == 1
-       assert active_user.username == "testuser"
-       assert active_user.email == "test@example.com"
-       assert active_user.is_active is True
-       assert active_user.posts == []
+   def test_calculator_operations(calculator):
+       """Test the basic calculator operations."""
+       assert calculator.add(1, 2) == 3
+       assert calculator.subtract(5, 3) == 2
+       assert calculator.multiply(2, 4) == 8
+       assert calculator.divide(10, 2) == 5
    
-   def test_user_deactivation(active_user):
-       """Test that a user can be deactivated."""
-       active_user.deactivate()
-       assert active_user.is_active is False
+   def test_memory_store_and_recall(calculator):
+       """Test the memory store and recall functions."""
+       calculator.memory_store(5)
+       assert calculator.memory_recall() == 5
    
-   # Add more tests for add_post and get_posts methods using the fixtures
+   def test_memory_clear(calculator):
+       """Test the memory clear function."""
+       calculator.memory_store(5)
+       calculator.memory_clear()
+       assert calculator.memory_recall() == 0
    ```
 
-3. Complete the test file by adding tests for the `add_post` and `get_posts` methods.
-
-4. Run the tests:
+2. Run the tests:
    ```bash
-   pytest
+   pytest -v tests/test_calculator.py
    ```
 
-### Task 3.2: Parameterized Tests
+## Part 4: Parameterized Tests and Coverage
 
-1. Add a parameterized test to `test_math_operations.py`:
+### Task 4.1: Adding Parameterized Tests
+
+1. Add parameterized tests to `tests/test_operations.py`:
 
    ```python
    @pytest.mark.parametrize("a, b, expected", [
@@ -226,148 +274,153 @@ Testing is a critical part of software development. It helps ensure your code wo
    def test_add_parameterized(a, b, expected):
        """Test add function with multiple inputs."""
        assert add(a, b) == expected
+   
+   @pytest.mark.parametrize("a, b, expected", [
+       (5, 2, 3),
+       (0, 0, 0),
+       (1, 1, 0),
+       (-1, -1, 0)
+   ])
+   def test_subtract_parameterized(a, b, expected):
+       """Test subtract function with multiple inputs."""
+       assert subtract(a, b) == expected
    ```
 
-2. Create similar parameterized tests for the other math functions.
+2. Create similar parameterized tests for multiply and divide.
 
-3. Run the tests:
-   ```bash
-   pytest
-   ```
-
-## Part 4: Test Coverage
-
-### Task 4.1: Measuring Coverage
+### Task 4.2: Measuring Test Coverage
 
 1. Run your tests with coverage:
    ```bash
-   pytest --cov=.
+   pytest --cov=src/calculator
    ```
 
 2. Generate an HTML coverage report:
    ```bash
-   pytest --cov=. --cov-report=html
+   pytest --cov=src/calculator --cov-report=html
    ```
 
-3. Examine the coverage report. Are there any parts of your code not being tested?
+3. Examine the report to identify any untested code and add tests to improve coverage.
 
-### Task 4.2: Improving Coverage
+## Part 5: Test-Driven Development for Scientific Calculator Features
 
-1. Add additional tests to improve your coverage.
+### Task 5.1: Writing Tests First for New Features
 
-2. Run coverage again to verify improvement.
-
-## Part 5: Test-Driven Development
-
-### Task 5.1: Writing Tests First
-
-1. Create a new file named `test_string_utils.py`:
+1. Create a new test file `tests/test_scientific.py`:
 
    ```python
-   """Tests for string utility functions that don't exist yet."""
+   """Tests for scientific calculator operations."""
    import pytest
-   from string_utils import reverse_string, count_vowels, is_palindrome
+   import math
+   from calculator.scientific import square_root, power
    
-   def test_reverse_string():
-       """Test that strings are correctly reversed."""
-       assert reverse_string("hello") == "olleh"
-       assert reverse_string("python") == "nohtyp"
-       assert reverse_string("") == ""
-       assert reverse_string("a") == "a"
+   def test_square_root():
+       """Test the square root function."""
+       assert square_root(4) == 2
+       assert square_root(9) == 3
+       assert square_root(2) == pytest.approx(1.414, 0.001)
    
-   def test_count_vowels():
-       """Test that vowels are correctly counted."""
-       assert count_vowels("hello") == 2
-       assert count_vowels("python") == 1
-       assert count_vowels("aeiou") == 5
-       assert count_vowels("") == 0
-       assert count_vowels("bcdfg") == 0
+   def test_square_root_negative():
+       """Test that square root of negative number raises ValueError."""
+       with pytest.raises(ValueError):
+           square_root(-1)
    
-   def test_is_palindrome():
-       """Test that palindromes are correctly identified."""
-       assert is_palindrome("radar") is True
-       assert is_palindrome("python") is False
-       assert is_palindrome("") is True
-       assert is_palindrome("a") is True
-       assert is_palindrome("Radar") is False  # Case-sensitive
+   def test_power():
+       """Test the power function."""
+       assert power(2, 3) == 8
+       assert power(5, 2) == 25
+       assert power(4, 0.5) == 2
    ```
 
-2. Run the tests. They will fail because the functions don't exist yet:
+2. Run the tests and watch them fail:
    ```bash
-   pytest test_string_utils.py -v
+   pytest tests/test_scientific.py -v
    ```
 
-### Task 5.2: Implementing the Code
+### Task 5.2: Implementing the Scientific Functions
 
-1. Create a file named `string_utils.py` and implement the functions to make the tests pass:
+1. Create a new file `src/calculator/scientific.py`:
 
    ```python
-   """Utility functions for string manipulation."""
+   """Scientific calculator operations."""
+   import math
    
-   def reverse_string(s):
+   def square_root(x):
        """
-       Reverse a string.
+       Calculate the square root of x.
        
        Args:
-           s: The string to reverse
+           x: The number to calculate the square root of
            
        Returns:
-           The reversed string
+           The square root of x
+           
+       Raises:
+           ValueError: If x is negative
        """
-       # Implement this function
-       pass
+       if x < 0:
+           raise ValueError("Cannot calculate square root of negative number")
+       return math.sqrt(x)
    
-   def count_vowels(s):
+   def power(base, exponent):
        """
-       Count the number of vowels in a string.
+       Calculate base raised to the power of exponent.
        
        Args:
-           s: The string to count vowels in
+           base: The base number
+           exponent: The exponent
            
        Returns:
-           The number of vowels in the string
+           base^exponent
        """
-       # Implement this function
-       pass
-   
-   def is_palindrome(s):
-       """
-       Check if a string is a palindrome.
-       
-       A palindrome is a string that reads the same forwards and backwards.
-       
-       Args:
-           s: The string to check
-           
-       Returns:
-           True if the string is a palindrome, False otherwise
-       """
-       # Implement this function
-       pass
+       return math.pow(base, exponent)
    ```
 
-2. Implement each function so that the tests pass.
-
-3. Run the tests again to verify they pass:
+2. Run the tests again to see them pass:
    ```bash
-   pytest test_string_utils.py -v
+   pytest tests/test_scientific.py -v
    ```
 
-## Part 6: Integration with Continuous Integration
+3. Update the Calculator class to include these new functions:
 
-### Task 6.1: Setting Up a Test Configuration
-
-1. Create a file named `pytest.ini`:
-
-   ```ini
-   [pytest]
-   testpaths = .
-   python_files = test_*.py
-   python_functions = test_*
-   python_classes = Test*
+   ```python
+   # Add to src/calculator/calculator.py
+   from .scientific import square_root, power
+   
+   # Add these methods to the Calculator class
+   def square_root(self, x):
+       """Calculate the square root of x."""
+       return square_root(x)
+   
+   def power(self, base, exponent):
+       """Calculate base raised to the power of exponent."""
+       return power(base, exponent)
    ```
 
-2. Create a `.github/workflows/test.yml` file (for GitHub Actions):
+4. Add tests for these new calculator methods in `tests/test_calculator.py`.
+
+## Part 6: VS Code Integration and CI/CD
+
+### Task 6.1: Setting Up VS Code for Testing
+
+1. Create a `.vscode/settings.json` file:
+
+   ```json
+   {
+       "python.testing.pytestEnabled": true,
+       "python.testing.unittestEnabled": false,
+       "python.testing.nosetestsEnabled": false,
+       "python.testing.pytestArgs": [
+           "tests"
+       ]
+   }
+   ```
+
+2. Use the Test Explorer in VS Code to run your tests.
+
+### Task 6.2: Setting Up GitHub Actions for Continuous Integration
+
+1. Create a `.github/workflows/test.yml` file:
 
    ```yaml
    name: Python Tests
@@ -382,36 +435,228 @@ Testing is a critical part of software development. It helps ensure your code wo
      test:
        runs-on: ubuntu-latest
        steps:
-       - uses: actions/checkout@v2
+       - uses: actions/checkout@v3
        - name: Set up Python
-         uses: actions/setup-python@v2
+         uses: actions/setup-python@v4
          with:
            python-version: '3.10'
        - name: Install dependencies
          run: |
            python -m pip install --upgrade pip
            pip install pytest pytest-cov
-           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+           pip install -e .
        - name: Test with pytest
          run: |
-           pytest --cov=. --cov-report=xml
+           pytest --cov=src --cov-report=xml
        - name: Upload coverage to Codecov
-         uses: codecov/codecov-action@v2
+         uses: codecov/codecov-action@v3
    ```
 
 ## Submission Requirements
 
-Submit the following files:
+Submit the following:
 
-1. All Python modules (`.py` files) you created
-2. All test files (beginning with `test_`)
-3. Your pytest configuration and CI workflow files
-4. A screenshot of your test results with coverage
-5. A text file named `tdd_reflection.txt` answering these questions:
+1. Your complete calculator project including:
+   - All Python files in `src/calculator/`
+   - All test files in `tests/`
+   - At least 90% test coverage
+
+2. A text file named `testing_reflection.txt` answering these questions:
+   - How does test-driven development change your approach to writing code?
+   - Why is automated testing important in professional software development?
+   - How do test fixtures and parameterized tests improve test efficiency?
+   - How would you integrate testing into your future projects?
+
+## Additional Resources
+
+- [Pytest Documentation](https://docs.pytest.org/)
+- [Python Testing with pytest (Book by Brian Okken)](https://pragprog.com/titles/bopytest/python-testing-with-pytest/)
+- [Test-Driven Development with Python](https://www.obeythetestinggoat.com/)
+   ```python
+   """Calculator with memory and scientific functionality."""
+   from .operations import add, subtract, multiply, divide
+   from .scientific import square_root, power, sin, cos, tan
+
+   class Calculator:
+       """Calculator implementation with memory and scientific functionality."""
+       
+       def __init__(self):
+           """Initialize calculator with zero memory."""
+           self.memory = 0
+       
+       def add(self, a, b):
+           """Add two numbers."""
+           return add(a, b)
+       
+       def subtract(self, a, b):
+           """Subtract b from a."""
+           return subtract(a, b)
+       
+       def multiply(self, a, b):
+           """Multiply two numbers."""
+           return multiply(a, b)
+       
+       def divide(self, a, b):
+           """Divide a by b."""
+           return divide(a, b)
+       
+       def memory_store(self, value):
+           """Store a value in memory."""
+           self.memory = value
+       
+       def memory_recall(self):
+           """Recall the stored value."""
+           return self.memory
+       
+       def memory_clear(self):
+           """Clear the memory."""
+           self.memory = 0
+       
+       def square_root(self, x):
+           """Calculate the square root of x."""
+           return square_root(x)
+       
+       def power(self, base, exponent):
+           """Calculate base raised to the power of exponent."""
+           return power(base, exponent)
+       
+       def sin(self, x):
+           """Calculate the sine of x (in radians)."""
+           return sin(x)
+       
+       def cos(self, x):
+           """Calculate the cosine of x (in radians)."""
+           return cos(x)
+       
+       def tan(self, x):
+           """Calculate the tangent of x (in radians)."""
+           return tan(x)
+   ```
+
+4. Add tests for these new methods in `tests/test_calculator.py` and run all tests:
+   ```bash
+   pytest
+   ```
+
+## Part 6: VS Code Integration and CI/CD
+
+### Task 6.1: Setting Up VS Code for Testing
+
+1. In VS Code, install the Python and Test Explorer extensions if not already installed.
+
+2. Create a `.vscode/settings.json` file with pytest configuration:
+
+   ```json
+   {
+       "python.testing.pytestEnabled": true,
+       "python.testing.unittestEnabled": false,
+       "python.testing.nosetestsEnabled": false,
+       "python.testing.pytestArgs": [
+           "tests"
+       ],
+       "python.linting.enabled": true,
+       "python.linting.pylintEnabled": true
+   }
+   ```
+
+3. Use the Test Explorer sidebar in VS Code to run and debug tests.
+
+### Task 6.2: Setting Up GitHub Actions for Continuous Testing
+
+1. Create a `.github/workflows/test.yml` file:
+
+   ```yaml
+   name: Python Tests
+
+   on:
+     push:
+       branches: [ main ]
+     pull_request:
+       branches: [ main ]
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       strategy:
+         matrix:
+           python-version: ['3.8', '3.10']
+       
+       steps:
+       - uses: actions/checkout@v3
+       - name: Set up Python ${{ matrix.python-version }}
+         uses: actions/setup-python@v4
+         with:
+           python-version: ${{ matrix.python-version }}
+       - name: Install dependencies
+         run: |
+           python -m pip install --upgrade pip
+           pip install pytest pytest-cov pylint
+           pip install -e .
+       - name: Lint with pylint
+         run: |
+           pylint src tests
+       - name: Test with pytest
+         run: |
+           pytest --cov=src --cov-report=xml
+       - name: Upload coverage to Codecov
+         uses: codecov/codecov-action@v3
+   ```
+
+## Troubleshooting Common Testing Issues
+
+### Issue: Tests Can't Import Your Modules
+
+**Solution:**
+- Make sure your project is installed in development mode:
+  ```bash
+  pip install -e .
+  ```
+- Ensure you have `__init__.py` files in all directories
+- Check your import statements match your directory structure
+
+### Issue: Floating Point Comparison Failures
+
+**Solution:**
+- Use `pytest.approx()` for floating point comparisons:
+  ```python
+  assert 0.1 + 0.2 == pytest.approx(0.3)
+  ```
+
+### Issue: Test Discovery Problems
+
+**Solution:**
+- Ensure test files and functions follow naming conventions:
+  - Files should start with `test_`
+  - Functions should start with `test_`
+- Check your `pytest.ini` or configuration if you're using custom patterns
+
+### Issue: Coverage Report Shows Missing Lines
+
+**Solution:**
+- Add tests for edge cases and error conditions
+- Ensure all branches (if/else) are tested
+- Check that all functions and methods are called in tests
+
+## Submission Requirements
+
+Submit the following:
+
+1. Your complete calculator project with:
+   - All Python modules in `src/calculator/`
+   - All test files in `tests/`
+   - Working scientific calculator functions
+   - At least 90% test coverage
+
+2. A screenshot of your VS Code Test Explorer showing all tests passing
+
+3. A screenshot of your coverage report
+
+4. A text file named `tdd_reflection.txt` answering these questions:
    - What was challenging about writing tests before implementing the code?
    - How did the test-first approach influence your implementation?
-   - In what ways does automated testing improve code quality?
-   - How would you integrate testing into your development workflow?
+   - How can TDD improve the quality of a software project?
+   - How would you integrate testing into a team development workflow?
+   - How has automated testing evolved over time, and why is it important in modern software development?
 
 ## Additional Resources
 
@@ -419,3 +664,4 @@ Submit the following files:
 - [Python Testing with pytest (Book by Brian Okken)](https://pragprog.com/titles/bopytest/python-testing-with-pytest/)
 - [Test-Driven Development with Python](https://www.obeythetestinggoat.com/)
 - [Codecov for Python](https://about.codecov.io/language/python/)
+- [Martin Fowler on Test-Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html)
