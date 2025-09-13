@@ -3,6 +3,16 @@
 ## Overview
 A comprehensive guide designed for college students learning modern Python development tools and best practices. This repository serves as both a reference and a hands-on learning resource to help you build professional software engineering skills.
 
+## Learning Objectives
+
+After completing this guide, you will be able to:
+- Set up and manage professional Python development environments
+- Apply industry-standard code quality practices to Python projects
+- Write effective automated tests using pytest
+- Implement professional Git workflows for version control
+- Configure continuous integration pipelines with GitHub Actions
+- Use VS Code effectively for Python development
+
 ## Documentation
 
 This repository contains detailed documentation organized into the following sections:
@@ -43,19 +53,35 @@ Each assignment builds directly on the previous one, with the calculator project
 
 The best way to learn is by doing! Complete these practical assignments to build real-world skills:
 
-- [**Assignment 1: Virtual Environments and Pip**](assignments/01-virtual-env-pip.md)  
+- [**Assignment 1: Virtual Environments and Pip**](assignments/01-virtual-env-pip.md) (2-3 hours)  
   Set up your development environment and create the basic calculator structure with addition and subtraction operations.
 
-- [**Assignment 2: Code Quality with Pylint**](assignments/02-pylint-code-quality.md)  
+- [**Assignment 2: Code Quality with Pylint**](assignments/02-pylint-code-quality.md) (2-3 hours)  
   Apply code quality standards to your existing calculator code and improve its structure and documentation.
 
-- [**Assignment 3: Testing with Pytest**](assignments/03-pytest.md)  
+- [**Assignment 3: Testing with Pytest**](assignments/03-pytest.md) (3-4 hours)  
   Add comprehensive tests for your calculator and use test-driven development to implement multiplication and division features.
 
-- [**Assignment 4: Professional Git Workflows**](assignments/04-git-workflows.md)  
+- [**Assignment 4: Professional Git Workflows**](assignments/04-git-workflows.md) (3-4 hours)  
   Use Git branching strategies to implement scientific calculator features (square root, power, etc.) and manage the project professionally.
 
 Each assignment includes detailed instructions, example code, and reflection questions to deepen your understanding.
+
+## Prerequisites
+
+This guide assumes:
+- Basic familiarity with Python syntax (variables, functions, conditionals)
+- Access to a computer where you can install software
+- Ability to use a command-line terminal (basic commands)
+- No prior experience with virtual environments, testing, or version control is required
+
+## Quick Start for Experienced Developers
+
+If you're already familiar with some concepts, feel free to jump to specific sections:
+
+1. Already comfortable with virtual environments? Start with [Assignment 2](assignments/02-pylint-code-quality.md).
+2. Know Python and linting already? Jump to [Assignment 3](assignments/03-pytest.md).
+3. Experienced with most tools but want to learn Git workflows? Go straight to [Assignment 4](assignments/04-git-workflows.md).
 
 ## Who This Guide Is For
 
@@ -65,7 +91,32 @@ This guide is ideal for:
 - Junior developers wanting to improve their development workflow
 - Anyone transitioning from casual Python coding to professional development
 
-No advanced Python knowledge is required, but basic familiarity with Python syntax is recommended.
+## How to Measure Your Progress
+
+Each assignment includes:
+- ✅ Clear completion criteria
+- 🧠 Reflection questions to deepen understanding
+- 🔄 Opportunities to apply concepts to your own projects
+
+Consider keeping a learning journal as you work through these assignments to track your growth and insights.
+
+## What Success Looks Like
+
+By the end of this guide, you will have:
+- A fully functional calculator application with basic and scientific operations
+- A clean, well-documented codebase that passes industry-standard quality checks
+- A comprehensive test suite with high coverage
+- A professional Git history showing your development process
+- Hands-on experience with the same workflows used in professional software teams
+
+## Common Pitfalls to Avoid
+
+- Forgetting to activate your virtual environment before installing packages
+- Running tests from the wrong directory
+- Committing sensitive information to Git
+- Installing packages globally when they should be in the virtual environment
+- Not following naming conventions for test files (they should start with `test_`)
+- Ignoring linter warnings instead of addressing them
 
 ## Platform Support
 

@@ -6,6 +6,7 @@
 - Create test fixtures and parameterized tests
 - Measure test coverage
 - Apply test-driven development (TDD) principles
+- Extend your calculator project with testing best practices
 
 ## Background
 
@@ -28,6 +29,9 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
 - Virtual environment knowledge (from Assignment 1)
 - Understanding of code quality (from Assignment 2)
 - Calculator project from previous assignments
+
+## Time to Complete
+Expect to spend approximately 3-4 hours on this assignment.
 
 ## Part 1: Setting Up Pytest for Our Calculator Project
 
@@ -85,7 +89,7 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
        return a - b
    ```
 
-2. Create a test file `tests/test_operations.py`:
+2. Create or update `tests/test_operations.py`:
 
    ```python
    """Tests for calculator operations."""
@@ -139,7 +143,7 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
    pytest -v tests/test_operations.py
    ```
 
-3. Now implement the missing functions in `src/calculator/operations.py`:
+3. Now implement the missing functions in `src/calculator/operations.py` if you haven't already:
 
    ```python
    def multiply(a, b):
@@ -172,9 +176,9 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
 
 ## Part 3: Creating a Calculator Class with Test Fixtures
 
-### Task 3.1: Implementing a Calculator Class
+### Task 3.1: Testing the Calculator Class
 
-1. Create a file `src/calculator/calculator.py`:
+1. You should have a `Calculator` class from Assignment 2. If not, create it in `src/calculator/calculator.py`:
 
    ```python
    """Calculator implementation that uses our operations."""
@@ -216,9 +220,7 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
            self.memory = 0
    ```
 
-### Task 3.2: Using Test Fixtures
-
-1. Create a test file `tests/test_calculator.py`:
+2. Create a test file `tests/test_calculator.py` using a fixture:
 
    ```python
    """Tests for the Calculator class."""
@@ -253,7 +255,7 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
        assert calculator.memory_recall() == 0
    ```
 
-2. Run the tests:
+3. Run the tests:
    ```bash
    pytest -v tests/test_calculator.py
    ```
@@ -384,7 +386,7 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
 3. Update the Calculator class to include these new functions:
 
    ```python
-   # Add to src/calculator/calculator.py
+   # Add to imports in calculator.py
    from .scientific import square_root, power
    
    # Add these methods to the Calculator class
@@ -399,114 +401,112 @@ Pytest revolutionized Python testing by introducing fixtures, parameterization, 
 
 4. Add tests for these new calculator methods in `tests/test_calculator.py`.
 
-## Part 6: VS Code Integration and CI/CD
+## Part 6: Testing Best Practices
 
-### Task 6.1: Setting Up VS Code for Testing
+### Task 6.1: Test Organization
 
-1. Create a `.vscode/settings.json` file:
+Organize your tests following these principles:
 
-   ```json
-   {
-       "python.testing.pytestEnabled": true,
-       "python.testing.unittestEnabled": false,
-       "python.testing.nosetestsEnabled": false,
-       "python.testing.pytestArgs": [
-           "tests"
-       ]
-   }
-   ```
+1. **One assertion per test**: Ideally, each test should make one logical assertion
+2. **Descriptive test names**: Names should describe what's being tested
+3. **AAA pattern**: Arrange, Act, Assert structure makes tests readable
+4. **Independent tests**: Tests should not depend on each other
+5. **Fast tests**: Unit tests should run quickly
 
-2. Use the Test Explorer in VS Code to run your tests.
+### Task 6.2: Test Edge Cases
 
-### Task 6.2: Setting Up GitHub Actions for Continuous Integration
+Add tests for edge cases in `tests/test_operations.py`:
 
-1. Create a `.github/workflows/test.yml` file:
+```python
+def test_add_large_numbers():
+    """Test addition with large numbers."""
+    assert add(10**10, 10**10) == 2 * 10**10
 
-   ```yaml
-   name: Python Tests
+def test_subtract_identical_numbers():
+    """Test subtraction of identical numbers always gives zero."""
+    assert subtract(100, 100) == 0
+    assert subtract(-42, -42) == 0
 
-   on:
-     push:
-       branches: [ main ]
-     pull_request:
-       branches: [ main ]
+def test_multiply_by_zero():
+    """Test that multiplying by zero always gives zero."""
+    assert multiply(5, 0) == 0
+    assert multiply(0, 5) == 0
+    assert multiply(0, 0) == 0
+```
 
-   jobs:
-     test:
-       runs-on: ubuntu-latest
-       steps:
-       - uses: actions/checkout@v3
-       - name: Set up Python
-         uses: actions/setup-python@v4
-         with:
-           python-version: '3.10'
-       - name: Install dependencies
-         run: |
-           python -m pip install --upgrade pip
-           pip install pytest pytest-cov
-           pip install -e .
-       - name: Test with pytest
-         run: |
-           pytest --cov=src --cov-report=xml
-       - name: Upload coverage to Codecov
-         uses: codecov/codecov-action@v3
-   ```
+## Common Pitfalls
+
+- **Incomplete test coverage**: Make sure to test edge cases and error conditions
+- **Slow tests**: Keep unit tests fast; use mocks for external dependencies
+- **Brittle tests**: Avoid tests that break with minor code changes
+- **Testing implementation instead of behavior**: Focus on what the code does, not how it does it
+- **Test interdependence**: Tests should be able to run in any order
+- **Ignoring test failures**: Failed tests are telling you something important
+
+## Troubleshooting
+
+### Issue: Tests Can't Import Your Modules
+
+**Solution:**
+- Make sure your project is installed in development mode:
+  ```bash
+  pip install -e .
+  ```
+- Ensure you have `__init__.py` files in all directories
+- Check your import statements match your directory structure
+
+### Issue: Floating Point Comparison Failures
+
+**Solution:**
+- Use `pytest.approx()` for floating point comparisons:
+  ```python
+  assert 0.1 + 0.2 == pytest.approx(0.3)
+  ```
+
+## What Success Looks Like
+
+By the end of this assignment, you should have:
+- A comprehensive test suite for your calculator
+- Experience with test fixtures and parameterized tests
+- High test coverage (90%+)
+- New scientific calculator features developed with TDD
+- Confidence in the correctness of your code
+
+## Self-Assessment Questions
+
+1. What are the benefits of test-driven development?
+2. How do fixtures help make tests more maintainable?
+3. Why is it important to test edge cases and exceptions?
+4. How does parameterized testing improve test efficiency?
+5. How would you decide what to test in a large application?
+6. How would automated testing fit into a team development workflow?
 
 ## Submission Requirements
 
 Submit the following:
 
-1. Your complete calculator project including:
-   - All Python files in `src/calculator/`
+1. Your complete calculator project with:
+   - All Python modules in `src/calculator/`
    - All test files in `tests/`
+   - Working scientific calculator functions
    - At least 90% test coverage
 
-2. A text file named `testing_reflection.txt` answering these questions:
-   - How does test-driven development change your approach to writing code?
-   - Why is automated testing important in professional software development?
-   - How do test fixtures and parameterized tests improve test efficiency?
-   - How would you integrate testing into your future projects?
+2. A screenshot of your test coverage report
+
+3. A text file named `testing_reflection.txt` answering these questions:
+   - What was challenging about writing tests before implementing the code?
+   - How did the test-first approach influence your implementation?
+   - How can TDD improve the quality of a software project?
+   - How would you integrate testing into a team development workflow?
+   - How has automated testing evolved over time, and why is it important in modern software development?
 
 ## Additional Resources
 
 - [Pytest Documentation](https://docs.pytest.org/)
 - [Python Testing with pytest (Book by Brian Okken)](https://pragprog.com/titles/bopytest/python-testing-with-pytest/)
 - [Test-Driven Development with Python](https://www.obeythetestinggoat.com/)
-   ```python
-   """Calculator with memory and scientific functionality."""
-   from .operations import add, subtract, multiply, divide
-   from .scientific import square_root, power, sin, cos, tan
-
-   class Calculator:
-       """Calculator implementation with memory and scientific functionality."""
-       
-       def __init__(self):
-           """Initialize calculator with zero memory."""
-           self.memory = 0
-       
-       def add(self, a, b):
-           """Add two numbers."""
-           return add(a, b)
-       
-       def subtract(self, a, b):
-           """Subtract b from a."""
-           return subtract(a, b)
-       
-       def multiply(self, a, b):
-           """Multiply two numbers."""
-           return multiply(a, b)
-       
-       def divide(self, a, b):
-           """Divide a by b."""
-           return divide(a, b)
-       
-       def memory_store(self, value):
-           """Store a value in memory."""
-           self.memory = value
-       
-       def memory_recall(self):
-           """Recall the stored value."""
-           return self.memory
+- [Effective Python Testing with pytest (Real Python)](https://realpython.com/pytest-python-testing/)
+- [Martin Fowler on Test-Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html)
        
        def memory_clear(self):
            """Clear the memory."""

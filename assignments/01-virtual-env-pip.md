@@ -6,6 +6,7 @@
 - Install and manage packages with pip
 - Manage package versions and dependencies
 - Create and use requirements.txt files
+- Set up the basic structure for a Python calculator project
 
 ## Background
 
@@ -25,6 +26,10 @@ The `virtualenv` tool was created in 2007 by Ian Bicking to solve these problems
 - Python 3.6+ installed on your system
 - Terminal/Command Prompt access
 - VS Code (recommended)
+- No prior experience with virtual environments required
+
+## Time to Complete
+Expect to spend approximately 2-3 hours on this assignment.
 
 ## Part 1: Creating Your First Virtual Environment
 
@@ -163,19 +168,29 @@ If you're using VS Code:
    def add(a, b):
        """Add two numbers and return the result."""
        return a + b
+   
+   def subtract(a, b):
+       """Subtract b from a and return the result."""
+       return a - b
    ```
 
 3. Create a simple test in `tests/test_operations.py`:
    ```python
    """Tests for calculator operations."""
    
-   from calculator.operations import add
+   from calculator.operations import add, subtract
 
    def test_add():
        """Test the add function."""
        assert add(1, 2) == 3
        assert add(-1, 1) == 0
        assert add(0, 0) == 0
+   
+   def test_subtract():
+       """Test the subtract function."""
+       assert subtract(3, 2) == 1
+       assert subtract(2, 3) == -1
+       assert subtract(0, 0) == 0
    ```
 
 4. Run the test to verify your setup:
@@ -329,6 +344,14 @@ In professional projects, it's common to separate development dependencies from 
    pip install -r requirements-dev.txt
    ```
 
+## Common Pitfalls
+
+- **Forgetting to activate the virtual environment**: Always check for the `(venv)` prefix in your terminal prompt
+- **Installing packages globally**: If you don't see the prefix, you might be installing packages in your global Python
+- **Path issues in import statements**: Make sure your project structure matches the import paths
+- **Not including `__init__.py` files**: These are needed to make Python treat directories as packages
+- **Running pytest from the wrong directory**: Run it from the project root, not from inside the tests directory
+
 ## Troubleshooting Common Issues
 
 ### Issue: "Command not found: python" or "Command not found: python3"
@@ -358,6 +381,26 @@ In professional projects, it's common to separate development dependencies from 
 - **macOS/Linux:** Use `pip install --user package_name` or use a virtual environment
 - **Windows:** Run Command Prompt or PowerShell as administrator
 
+## What Success Looks Like
+
+By the end of this assignment, you should have:
+- A working virtual environment
+- A basic calculator project structure with addition and subtraction operations
+- Working tests for these operations
+- A requirements.txt file to manage dependencies
+- Knowledge of how to manage package versions
+
+## Self-Assessment Questions
+
+Take a moment to answer these questions to check your understanding:
+
+1. Why are virtual environments important for Python development?
+2. What is the difference between `pip install package` and `pip install -r requirements.txt`?
+3. How would you specify that your project needs any version of pytest that is at least 7.0.0 but less than 8.0.0?
+4. What happens if two projects on your computer need different versions of the same library?
+5. What are the key differences in virtual environment usage between Windows, macOS, and Linux/WSL2?
+6. How has Python package management evolved over time, and what problems did each evolution solve?
+
 ## Submission Requirements
 
 Create a text file named `assignment1_answers.txt` with the following:
@@ -368,13 +411,7 @@ Create a text file named `assignment1_answers.txt` with the following:
    - Running the calculator tests
    - Creating and using requirements.txt
 
-2. Written answers to these questions:
-   - Why are virtual environments important for Python development?
-   - What is the difference between `pip install package` and `pip install -r requirements.txt`?
-   - How would you specify that your project needs any version of pytest that is at least 7.0.0 but less than 8.0.0?
-   - What happens if two projects on your computer need different versions of the same library?
-   - What are the key differences in virtual environment usage between Windows, macOS, and Linux/WSL2?
-   - How has Python package management evolved over time, and what problems did each evolution solve?
+2. Written answers to the self-assessment questions above.
 
 ## Additional Resources
 

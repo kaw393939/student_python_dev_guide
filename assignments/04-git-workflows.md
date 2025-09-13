@@ -12,134 +12,180 @@
 
 Git, created by Linus Torvalds in 2005 for Linux kernel development, has become the industry standard for version control. This assignment will teach you professional Git workflows using our calculator project as an example.
 
+### Historical Context
+
+Version control systems have evolved significantly over time:
+- **1972**: Source Code Control System (SCCS) - First version control system
+- **1982**: Revision Control System (RCS) - Improved file-level versioning
+- **1990**: Concurrent Versions System (CVS) - Added multi-file commits
+- **2000**: Apache Subversion (SVN) - Improved CVS with atomic commits
+- **2005**: Git - Created by Linus Torvalds after a dispute with the proprietary BitKeeper VCS
+- **2008**: GitHub launched, making Git more accessible and adding social coding features
+
+Git revolutionized version control with its distributed nature, allowing every developer to have a full copy of the repository history.
+
 ## Prerequisites
 - Git installed on your system
 - Python 3.6+ installed
 - Virtual environment setup (from Assignment 1)
+- Calculator project from previous assignments
 - Basic Git knowledge (init, add, commit, push)
 
-## Part 1: Historical Context and Setup
+## Time to Complete
+Expect to spend approximately 3-4 hours on this assignment.
 
-### Task 1.1: Understanding Version Control Evolution
+## Part 1: Setting Up the Repository
 
-Read about the evolution of version control systems:
+### Task 1.1: Initializing a Git Repository
 
-1. **Local VCS**: Early systems like RCS (1982) that tracked changes on a single computer
-2. **Centralized VCS**: Systems like CVS (1990) and SVN (2000) with a central server
-3. **Distributed VCS**: Modern systems like Git (2005) and Mercurial where every developer has a full repository copy
+If you haven't already, initialize a Git repository for your calculator project:
 
-**Reflection Questions:**
-1. Why was distributed version control a revolutionary improvement over centralized systems?
-2. How did Git's design goals (speed, distributed nature, non-linear development) reflect the needs of the Linux kernel project?
+```bash
+cd python_calculator
+git init
+```
 
-### Task 1.2: Setting Up the Calculator Project Repository
+### Task 1.2: Creating a .gitignore File
 
-1. Create a new directory for the calculator project:
+1. Create a `.gitignore` file:
    ```bash
-   mkdir python_calculator
-   cd python_calculator
+   touch .gitignore
    ```
 
-2. Initialize a Git repository:
+2. Add standard Python ignores:
+   ```
+   # Virtual Environment
+   venv/
+   new_venv/
+   
+   # Python
+   __pycache__/
+   *.py[cod]
+   *$py.class
+   .pytest_cache/
+   .coverage
+   htmlcov/
+   
+   # IDE
+   .vscode/
+   .idea/
+   
+   # OS specific
+   .DS_Store
+   Thumbs.db
+   ```
+
+3. Make your first commit:
    ```bash
-   git init
+   git add .gitignore
+   git commit -m "Initial commit: Add .gitignore file"
    ```
 
-3. Create a basic project structure:
-   ```bash
-   mkdir -p src/calculator tests docs
-   touch README.md
-   touch src/calculator/__init__.py
-   touch src/calculator/operations.py
-   touch tests/__init__.py
-   touch tests/test_operations.py
-   ```
+### Task 1.3: Adding Your Calculator Project
 
-4. Create a basic README.md file:
-   ```markdown
-   # Python Calculator
-
-   A simple calculator implementation demonstrating professional Python development practices.
-
-   ## Features
-   - Basic arithmetic operations
-   - Unit testing
-   - Code quality standards
-   - Professional Git workflow
-   ```
-
-5. Make your first commit:
+1. Add your existing calculator files:
    ```bash
    git add .
-   git commit -m "Initial project structure"
+   git status  # Review what will be committed
    ```
 
-## Part 2: Implementing Features with Atomic Commits
+2. Make an atomic commit:
+   ```bash
+   git commit -m "Add calculator project with basic operations"
+   ```
 
-### Task 2.1: Create the Addition Operation
+## Part 2: Implementing Atomic Commits
+
+### Task 2.1: Understanding Atomic Commits
+
+An atomic commit represents a single logical change to your codebase. Benefits include:
+- Easier to understand what each commit does
+- Simpler to review code changes
+- Ability to revert specific changes without affecting others
+- Better debugging through history
+
+### Task 2.2: Adding Trigonometric Functions with Atomic Commits
 
 1. Create a feature branch:
    ```bash
-   git checkout -b feature/addition
+   git checkout -b feature/trigonometry
    ```
 
-2. Implement the addition function in `src/calculator/operations.py`:
+2. Create a new file `src/calculator/trigonometry.py`:
    ```python
-   """Basic arithmetic operations for the calculator."""
-
-   def add(a, b):
+   """Trigonometric functions for the calculator."""
+   import math
+   
+   def sin(x):
        """
-       Add two numbers and return the result.
+       Calculate the sine of x (in radians).
        
        Args:
-           a: First number
-           b: Second number
+           x: Angle in radians
            
        Returns:
-           The sum of a and b
+           The sine of x
        """
-       return a + b
+       return math.sin(x)
    ```
 
-3. Create a test in `tests/test_operations.py`:
+3. Make an atomic commit for this function:
+   ```bash
+   git add src/calculator/trigonometry.py
+   git commit -m "feat: implement sine function for calculator"
+   ```
+
+4. Add the cosine function:
    ```python
-   """Tests for calculator operations."""
-   
-   from calculator.operations import add
-
-   def test_add():
-       """Test the add function."""
-       assert add(1, 2) == 3
-       assert add(-1, 1) == 0
-       assert add(0, 0) == 0
+   def cos(x):
+       """
+       Calculate the cosine of x (in radians).
+       
+       Args:
+           x: Angle in radians
+           
+       Returns:
+           The cosine of x
+       """
+       return math.cos(x)
    ```
 
-4. Make an atomic commit:
+5. Make another atomic commit:
    ```bash
-   git add src/calculator/operations.py
-   git commit -m "feat: implement addition operation"
-   
-   git add tests/test_operations.py
-   git commit -m "test: add tests for addition operation"
+   git add src/calculator/trigonometry.py
+   git commit -m "feat: add cosine function to trigonometry module"
    ```
 
-### Task 2.2: Create the Subtraction Operation
+6. Add the tangent function:
+   ```python
+   def tan(x):
+       """
+       Calculate the tangent of x (in radians).
+       
+       Args:
+           x: Angle in radians
+           
+       Returns:
+           The tangent of x
+           
+       Raises:
+           ValueError: If x is a multiple of π/2 (undefined)
+       """
+       # Check for undefined values
+       if abs(math.cos(x)) < 1e-10:
+           raise ValueError("Tangent is undefined at this value")
+       return math.tan(x)
+   ```
 
-1. Create a new feature branch from main:
+7. Make another atomic commit:
    ```bash
-   git checkout main
-   git checkout -b feature/subtraction
+   git add src/calculator/trigonometry.py
+   git commit -m "feat: add tangent function with domain validation"
    ```
 
-2. Implement the subtraction function in `operations.py` and its test in `test_operations.py`.
+### Task 2.3: Writing Good Commit Messages
 
-3. Make atomic commits for the implementation and tests.
-
-## Part 3: Advanced Git Techniques
-
-### Task 3.1: Creating Good Commit Messages
-
-Commit messages should follow the conventional commits format:
+Follow the Conventional Commits format:
 ```
 <type>[optional scope]: <description>
 
@@ -152,312 +198,309 @@ Types include:
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
-- `test`: Adding or correcting tests
-- `refactor`: Code change that neither fixes a bug nor adds a feature
 - `style`: Formatting changes
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `test`: Adding or correcting tests
 
-For example:
+Example of a complete commit message:
 ```
-feat(operations): implement multiplication function
+feat(trigonometry): add inverse trigonometric functions
 
-Add multiplication operation to calculator operations module.
-Includes input validation and documentation.
+Implement asin, acos, and atan functions to complement existing
+trigonometric functions. These provide the ability to calculate
+angles from ratio values.
 
 Closes #42
 ```
 
-Update your previous commit messages using interactive rebase:
-```bash
-git rebase -i HEAD~2
-```
+## Part 3: Branching Strategies
 
-### Task 3.2: Handling Merge Conflicts
+### Task 3.1: Understanding Branching Strategies
 
-1. Merge your feature branches to main:
+Common branching strategies include:
+- **GitFlow**: Complex but comprehensive, with develop/feature/release/hotfix branches
+- **GitHub Flow**: Simpler workflow with feature branches and PRs
+- **Trunk-Based Development**: Most work on main, with short-lived feature branches
+
+For this assignment, you'll implement GitHub Flow:
+1. Create feature branches from main
+2. Commit changes to feature branches
+3. Open pull requests
+4. Discuss and review code
+5. Merge to main
+
+### Task 3.2: Creating a Feature Branch for Calculator Memory
+
+1. Switch back to the main branch:
    ```bash
    git checkout main
-   git merge feature/addition
-   git merge feature/subtraction
    ```
 
-2. Create a new feature branch for division:
+2. Create a new feature branch:
    ```bash
-   git checkout -b feature/division
+   git checkout -b feature/memory-functions
    ```
 
-3. Implement division in `operations.py`:
+3. Update your Calculator class in `src/calculator/calculator.py` to add memory functionality:
    ```python
-   def divide(a, b):
+   def memory_add(self, value):
        """
-       Divide a by b and return the result.
+       Add a value to the memory.
        
        Args:
-           a: Dividend
-           b: Divisor
-           
-       Returns:
-           The quotient a/b
-           
-       Raises:
-           ZeroDivisionError: If b is 0
+           value: Value to add to memory
        """
-       if b == 0:
-           raise ZeroDivisionError("Cannot divide by zero")
-       return a / b
-   ```
-
-4. Create a conflicting multiplication feature branch:
-   ```bash
-   git checkout main
-   git checkout -b feature/multiplication
-   ```
-
-5. Implement multiplication, but also modify the division function signature:
-   ```python
-   def multiply(a, b):
+       self.memory += value
+   
+   def memory_subtract(self, value):
        """
-       Multiply two numbers and return the result.
+       Subtract a value from the memory.
        
        Args:
-           a: First factor
-           b: Second factor
-           
-       Returns:
-           The product of a and b
+           value: Value to subtract from memory
        """
-       return a * b
-       
-   def divide(numerator, denominator):
-       """Division operation with renamed parameters."""
-       if denominator == 0:
-           raise ZeroDivisionError("Cannot divide by zero")
-       return numerator / denominator
+       self.memory -= value
    ```
 
-6. Merge the multiplication branch first:
+4. Make an atomic commit:
+   ```bash
+   git add src/calculator/calculator.py
+   git commit -m "feat: add memory_add and memory_subtract functions"
+   ```
+
+5. Add tests for the new functionality in `tests/test_calculator.py`.
+
+6. Make another atomic commit:
+   ```bash
+   git add tests/test_calculator.py
+   git commit -m "test: add tests for memory_add and memory_subtract functions"
+   ```
+
+## Part 4: Handling Merge Conflicts
+
+### Task 4.1: Creating a Conflict
+
+1. Switch back to the main branch:
    ```bash
    git checkout main
-   git merge feature/multiplication
    ```
 
-7. Now try to merge the division branch and resolve the conflict:
+2. Create another feature branch:
    ```bash
-   git merge feature/division
+   git checkout -b feature/display
    ```
 
-8. Open the conflicted file and resolve the conflict, keeping both the division and multiplication functions with consistent parameter naming.
+3. Modify the Calculator class to add a display property:
+   ```python
+   class Calculator:
+       """Calculator class to perform arithmetic operations."""
+       
+       def __init__(self):
+           """Initialize calculator with memory set to 0 and empty display."""
+           self.memory = 0
+           self.display = "0"
+       
+       # Add this method
+       def update_display(self, value):
+           """Update the calculator display."""
+           self.display = str(value)
+   ```
 
-9. Complete the merge:
+4. Commit this change:
    ```bash
-   git add src/calculator/operations.py
-   git commit -m "merge: combine division and multiplication features"
+   git add src/calculator/calculator.py
+   git commit -m "feat: add display functionality to calculator"
    ```
 
-## Part 4: Collaborative Workflows
+### Task 4.2: Resolving the Conflict
 
-### Task 4.1: Setting Up a Remote Repository
+1. Try to merge the memory feature branch:
+   ```bash
+   git checkout main
+   git merge feature/memory-functions
+   ```
 
-1. Create a new repository on GitHub
+2. Merge the display feature branch (this will create a conflict):
+   ```bash
+   git merge feature/display
+   ```
+
+3. Resolve the conflict in `src/calculator/calculator.py` by editing the file to include both changes:
+   ```python
+   class Calculator:
+       """Calculator class to perform arithmetic operations."""
+       
+       def __init__(self):
+           """Initialize calculator with memory set to 0 and empty display."""
+           self.memory = 0
+           self.display = "0"
+       
+       # ... other methods ...
+       
+       def memory_add(self, value):
+           """Add a value to the memory."""
+           self.memory += value
+       
+       def memory_subtract(self, value):
+           """Subtract a value from the memory."""
+           self.memory -= value
+       
+       def update_display(self, value):
+           """Update the calculator display."""
+           self.display = str(value)
+   ```
+
+4. Mark the conflict as resolved:
+   ```bash
+   git add src/calculator/calculator.py
+   ```
+
+5. Complete the merge:
+   ```bash
+   git commit -m "merge: combine memory and display features"
+   ```
+
+## Part 5: Remote Repositories and Collaboration
+
+### Task 5.1: Setting Up a Remote Repository
+
+1. Create a new repository on GitHub (or another Git hosting service)
+
 2. Add the remote to your local repository:
    ```bash
    git remote add origin https://github.com/yourusername/python_calculator.git
    ```
+
 3. Push your main branch:
    ```bash
    git push -u origin main
    ```
 
-### Task 4.2: Simulating Collaborative Development
-
-In this task, you'll simulate working with a teammate by using two different directories.
-
-1. Clone your repository to a different directory (simulating a teammate):
+4. Push your feature branches:
    ```bash
-   cd ..
-   git clone https://github.com/yourusername/python_calculator.git calculator_teammate
-   cd calculator_teammate
+   git push origin feature/trigonometry
+   git push origin feature/memory-functions
+   git push origin feature/display
    ```
 
-2. In the original directory, create a new feature:
+### Task 5.2: Creating a Pull Request
+
+1. Go to your repository on GitHub
+2. Select one of your feature branches
+3. Click "Compare & pull request"
+4. Write a clear title and description for your PR
+5. Submit the pull request
+
+### Task 5.3: Code Review Process
+
+1. Review your own PR, looking for:
+   - Code style and quality
+   - Potential bugs
+   - Test coverage
+   - Documentation
+
+2. Add comments to your PR with improvements you would make
+
+3. Merge the PR once you're satisfied with the quality
+
+## Part 6: Advanced Git Techniques
+
+### Task 6.1: Using git log to Understand History
+
+1. View the commit history with a better format:
    ```bash
-   cd ../python_calculator
-   git checkout -b feature/square-root
+   git log --oneline --graph --all
    ```
 
-3. Add a square root function to `operations.py` and push the branch:
+2. View changes in a specific commit:
    ```bash
-   git push -u origin feature/square-root
+   git show <commit-id>
    ```
 
-4. In the "teammate" directory, create a different feature:
+### Task 6.2: Using Tags for Releases
+
+1. Create a tag for your first release:
    ```bash
-   cd ../calculator_teammate
-   git checkout -b feature/power
+   git tag -a v0.1.0 -m "First release of Calculator with basic and scientific operations"
    ```
 
-5. Add a power function to `operations.py` and push the branch:
+2. Push the tag to GitHub:
    ```bash
-   git push -u origin feature/power
+   git push origin v0.1.0
    ```
 
-6. Create pull requests on GitHub for both features
+## Common Pitfalls
 
-7. Review each other's code (in this case, you review both as you're simulating both roles)
+- **Forgetting to create a branch**: Always work in a feature branch, not directly in main
+- **Large, non-atomic commits**: Keep commits small and focused on a single change
+- **Poor commit messages**: Use the conventional commits format for clarity
+- **Merging without testing**: Always test after resolving merge conflicts
+- **Forgetting to push**: Remember to push your branches to share your work
+- **Committing sensitive information**: Be careful not to commit API keys, passwords, etc.
 
-8. Merge the pull requests on GitHub
+## Troubleshooting
 
-9. Pull the changes to your local repositories:
-   ```bash
-   git checkout main
-   git pull
-   ```
+### Issue: "Failed to push some refs"
 
-## Part 5: Professional Git Practices
+**Solution:**
+- Pull the latest changes first:
+  ```bash
+  git pull origin main
+  ```
+- Then try pushing again
 
-### Task 5.1: Creating an Effective .gitignore
+### Issue: Accidentally committed to the wrong branch
 
-1. Create a comprehensive .gitignore file for Python projects:
-   ```bash
-   # Common Python ignores
-   __pycache__/
-   *.py[cod]
-   *$py.class
-   *.so
-   .Python
-   env/
-   venv/
-   ENV/
-   build/
-   develop-eggs/
-   dist/
-   downloads/
-   eggs/
-   .eggs/
-   lib/
-   lib64/
-   parts/
-   sdist/
-   var/
-   *.egg-info/
-   .installed.cfg
-   *.egg
-   
-   # Unit test / coverage reports
-   htmlcov/
-   .tox/
-   .coverage
-   .coverage.*
-   .cache
-   nosetests.xml
-   coverage.xml
-   *.cover
-   .hypothesis/
-   
-   # Jupyter Notebook
-   .ipynb_checkpoints
-   
-   # VS Code
-   .vscode/*
-   !.vscode/settings.json.example
-   
-   # PyCharm
-   .idea/
-   
-   # OS specific
-   .DS_Store
-   .DS_Store?
-   ._*
-   .Spotlight-V100
-   .Trashes
-   ehthumbs.db
-   Thumbs.db
-   ```
+**Solution:**
+- Use git stash to save your changes:
+  ```bash
+  git stash
+  git checkout correct-branch
+  git stash pop
+  ```
 
-2. Commit this file:
-   ```bash
-   git add .gitignore
-   git commit -m "chore: add comprehensive .gitignore file"
-   ```
+### Issue: Need to undo a commit
 
-### Task 5.2: Using Git Hooks
+**Solution:**
+- For the most recent commit:
+  ```bash
+  git reset --soft HEAD~1
+  ```
+- This keeps your changes but undoes the commit
 
-1. Create a pre-commit hook that runs tests and linting:
+## What Success Looks Like
 
-   Create a file at `.git/hooks/pre-commit`:
-   ```bash
-   #!/bin/bash
-   
-   # Activate virtual environment
-   source venv/bin/activate
-   
-   # Run pylint
-   pylint src tests
-   if [ $? -ne 0 ]; then
-       echo "Linting failed, commit aborted"
-       exit 1
-   fi
-   
-   # Run tests
-   pytest
-   if [ $? -ne 0 ]; then
-       echo "Tests failed, commit aborted"
-       exit 1
-   fi
-   
-   exit 0
-   ```
+By the end of this assignment, you should have:
+- A Git repository with a clean, logical commit history
+- Multiple feature branches demonstrating proper branching strategy
+- Experience resolving merge conflicts
+- A remote repository on GitHub with at least one PR
+- A tagged release of your calculator application
 
-2. Make the hook executable:
-   ```bash
-   chmod +x .git/hooks/pre-commit
-   ```
+## Self-Assessment Questions
 
-3. Try making a commit with a failing test to see the hook in action.
-
-## Part 6: Git for Project Management
-
-### Task 6.1: Using GitHub Issues
-
-1. Create several issues on GitHub for your calculator project:
-   - Add a memory function
-   - Create a command-line interface
-   - Fix division by zero error message
-   - Add scientific notation support
-
-2. Label and prioritize the issues
-
-### Task 6.2: Using Branches and PRs for Issue Management
-
-1. Pick one of the issues
-2. Create a branch with the issue number:
-   ```bash
-   git checkout -b feature/42-memory-function
-   ```
-3. Implement the feature
-4. Create a PR that references the issue:
-   ```
-   feat: add calculator memory function
-   
-   Implements a memory storage and recall function for the calculator.
-   
-   Closes #42
-   ```
+1. What are the benefits of atomic commits?
+2. How does branching help in collaborative development?
+3. What branching strategy would you recommend for a small team? For a large team?
+4. What should you do when you encounter a merge conflict?
+5. How does Git's distributed nature differ from centralized version control systems?
+6. Why is it important to write good commit messages?
 
 ## Submission Requirements
 
-Submit a link to your GitHub repository containing:
+Submit the following:
 
-1. The completed calculator project with:
-   - At least 5 operations (add, subtract, multiply, divide, and one more)
-   - Tests for all operations
-   - Proper documentation
-   - Meaningful commit history following conventional commits format
+1. The URL to your GitHub repository
+2. Screenshots of:
+   - Your commit history (git log)
+   - A resolved merge conflict
+   - Your pull request on GitHub
 
-2. A reflection document addressing:
-   - How did atomic commits improve your development process?
-   - What challenges did you face with merge conflicts and how did you resolve them?
-   - How would your Git workflow change when working in a team vs. solo?
-   - How does Git support or enhance software quality?
+3. A reflection document (300-500 words) addressing:
+   - How atomic commits improved your development process
+   - What challenges you faced with merge conflicts and how you resolved them
+   - How you would adapt these Git workflows for team projects
+   - How Git supports or enhances software quality
 
 ## Additional Resources
 

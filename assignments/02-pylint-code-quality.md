@@ -6,164 +6,276 @@
 - Install and configure pylint
 - Identify and fix common code quality issues
 - Integrate pylint into your development workflow
+- Apply code quality standards to your calculator project
 
 ## Background
 
 Writing clean, readable code is essential for collaboration and maintenance. Python has a style guide called PEP 8 that provides conventions for Python code. Pylint is a static code analysis tool that checks if your code follows these conventions and helps identify potential errors.
 
+### Historical Context
+
+Code quality tools have a long history in software development:
+- In 1978, Stephen Johnson created "lint" for C programming, the first static analyzer
+- PEP 8 was introduced in 2001 to standardize Python code style
+- Pylint was created in 2003 to automate PEP 8 compliance checking
+- Modern development teams consider linting an essential part of the development workflow
+
 ## Prerequisites
 - Python 3.6+ installed
 - Virtual environment knowledge (from Assignment 1)
 - Basic Python programming skills
+- Calculator project from Assignment 1
 
-## Part 1: Setting Up Pylint
+## Time to Complete
+Expect to spend approximately 2-3 hours on this assignment.
+
+## Part 1: Setting Up Pylint for Your Calculator Project
 
 ### Task 1.1: Prepare Your Environment
 
-1. Create a new directory for this assignment:
+1. Navigate to your calculator project directory:
    ```bash
-   mkdir pylint_assignment
-   cd pylint_assignment
+   cd python_calculator
    ```
 
-2. Create and activate a virtual environment:
+2. Ensure your virtual environment is activated:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # On Windows with WSL2, macOS, or Linux:
+   source venv/bin/activate
+   
+   # On Windows Command Prompt:
+   venv\Scripts\activate
+   
+   # On Windows PowerShell:
+   .\venv\Scripts\Activate.ps1
    ```
 
-3. Install pylint:
+3. If you haven't already installed pylint, install it now:
    ```bash
    pip install pylint
    ```
 
-### Task 1.2: Verify Installation
+### Task 1.2: First Analysis of Your Calculator Code
 
-1. Check pylint version:
+1. Run pylint on your existing calculator operations file:
    ```bash
-   pylint --version
+   pylint src/calculator/operations.py
    ```
 
-2. Generate a sample pylint configuration file:
+2. Take note of the score and the issues pylint found.
+
+3. Create a text file named `pylint_issues.txt` and document:
+   - What was your initial score?
+   - What types of issues were found?
+   - Which issues do you think are most important to fix?
+
+## Part 2: Understanding PEP 8 and Pylint Messages
+
+### Task 2.1: Learn About PEP 8
+
+Read the key sections of PEP 8, focusing on:
+- Indentation (4 spaces per level)
+- Maximum line length (79 characters)
+- Imports (should be on separate lines, grouped properly)
+- Whitespace in expressions and statements
+- Comments and docstrings
+- Naming conventions
+
+### Task 2.2: Understanding Pylint Messages
+
+Pylint message categories:
+- **C**: Convention - programming standard violation
+- **R**: Refactor - bad code smell
+- **W**: Warning - Python specific problems
+- **E**: Error - likely bugs
+- **F**: Fatal - error preventing further processing
+
+Common messages include:
+- C0111: Missing docstring
+- C0103: Invalid name
+- C0303: Trailing whitespace
+- E1101: Instance has no 'x' member
+- R0201: Method could be a function
+
+## Part 3: Improving Your Calculator Code
+
+### Task 3.1: Fixing Convention Issues
+
+1. Improve the docstrings in your `operations.py` file:
+   ```python
+   """
+   Basic arithmetic operations for the calculator.
+   
+   This module provides elementary math functions for the calculator application.
+   """
+
+   def add(a, b):
+       """
+       Add two numbers and return the result.
+       
+       Args:
+           a: First number
+           b: Second number
+           
+       Returns:
+           The sum of a and b
+       """
+       return a + b
+   
+   def subtract(a, b):
+       """
+       Subtract b from a and return the result.
+       
+       Args:
+           a: Number to subtract from
+           b: Number to subtract
+           
+       Returns:
+           The difference (a - b)
+       """
+       return a - b
+   ```
+
+2. Run pylint again to see the improvement:
+   ```bash
+   pylint src/calculator/operations.py
+   ```
+
+### Task 3.2: Creating a Pylint Configuration
+
+1. Generate a default pylint configuration file:
    ```bash
    pylint --generate-rcfile > .pylintrc
    ```
 
-3. Take a moment to examine the generated file:
+2. Edit `.pylintrc` to customize settings:
+   - Increase maximum line length to 100
+   - Add your name to the copyright holder
+   - Adjust the docstring template if desired
+
+3. Run pylint with your configuration:
    ```bash
-   # On Linux/macOS
-   less .pylintrc
-   
-   # On Windows
-   type .pylintrc | more
+   pylint --rcfile=.pylintrc src/calculator/operations.py
    ```
 
-## Part 2: Analyzing Code Quality
+## Part 4: Extending Your Calculator with Quality in Mind
 
-### Task 2.1: Analyze Poorly Written Code
+### Task 4.1: Adding New Operations with Good Code Quality
 
-1. Create a file named `bad_code.py` with the following content:
-
+1. Add multiplication and division functions to `operations.py`, ensuring they meet PEP 8 standards:
    ```python
-   # This is intentionally bad code for pylint to analyze
-   import sys, os
-   
-   def DoSomething(x,y):
-       if x == y:
-         print('x and y are equal')
-       if x!=y:
-           print("x and y are not equal")
+   def multiply(a, b):
+       """
+       Multiply two numbers and return the result.
        
-       z = x+y
-       return z
+       Args:
+           a: First number
+           b: Second number
+           
+       Returns:
+           The product of a and b
+       """
+       return a * b
    
-   
-   def anotherfunc (a,   b,    c):
-       sum = a + b + c
-       return sum
-   
-   
-   a = DoSomething(3,4)
-   b = DoSomething(3,3)
-   unused_var = "This variable is never used"
-   
-   print(a, b)
+   def divide(a, b):
+       """
+       Divide a by b and return the result.
+       
+       Args:
+           a: Numerator
+           b: Denominator
+           
+       Returns:
+           The quotient a/b
+           
+       Raises:
+           ZeroDivisionError: If b is 0
+       """
+       if b == 0:
+           raise ZeroDivisionError("Cannot divide by zero")
+       return a / b
    ```
 
-2. Run pylint on this file:
+2. Run pylint on the updated file:
    ```bash
-   pylint bad_code.py
+   pylint --rcfile=.pylintrc src/calculator/operations.py
    ```
 
-3. Take note of the score and the issues pylint found.
+### Task 4.2: Creating a Calculator Class
 
-### Task 2.2: Understanding Pylint Messages
-
-1. Create a text file named `pylint_issues.txt`.
-
-2. For each unique type of issue found in `bad_code.py`, add an entry to your text file with:
-   - The pylint message code (e.g., C0103)
-   - The message text (e.g., "Variable name doesn't conform to snake_case naming style")
-   - A brief explanation of why this is an issue
-   - How you would fix it
-
-## Part 3: Fixing Code Quality Issues
-
-### Task 3.1: Improve the Code
-
-1. Create a new file named `good_code.py`.
-
-2. Rewrite the code from `bad_code.py` fixing all the issues pylint identified.
-
-3. Run pylint on your improved code:
-   ```bash
-   pylint good_code.py
-   ```
-
-4. Keep refining until you achieve a score of at least 9.0/10.
-
-### Task 3.2: Understanding PEP 8
-
-1. Research PEP 8 guidelines for:
-   - Naming conventions
-   - Indentation
-   - Imports
-   - Comments
-   - Maximum line length
-   - Spacing
-
-2. Add a comment at the top of your `good_code.py` file that summarizes the key PEP 8 guidelines you applied.
-
-## Part 4: Real-world Application
-
-### Task 4.1: Analyzing Existing Code
-
-1. Create a file named `calculator.py` with the following content:
-
+1. Create a new file `src/calculator/calculator.py`:
    ```python
    """
-   A simple calculator module with basic arithmetic operations.
+   Calculator class implementation.
+   
+   This module provides a Calculator class that uses the operations module.
    """
+   from calculator.operations import add, subtract, multiply, divide
+
    class Calculator:
+       """
+       A simple calculator class that provides basic arithmetic operations.
+       
+       This class uses the functions from the operations module to perform
+       calculations and keeps track of calculation history.
+       """
+       
+       def __init__(self):
+           """Initialize a new Calculator with empty history."""
+           self.history = []
+       
        def add(self, a, b):
-           """Add two numbers and return the result."""
-           return a + b
+           """
+           Add two numbers and store the operation in history.
+           
+           Args:
+               a: First number
+               b: Second number
+               
+           Returns:
+               The sum of a and b
+           """
+           result = add(a, b)
+           self.history.append(f"{a} + {b} = {result}")
+           return result
        
        def subtract(self, a, b):
-           """Subtract b from a and return the result."""
-           return a - b
+           """
+           Subtract b from a and store the operation in history.
+           
+           Args:
+               a: Number to subtract from
+               b: Number to subtract
+               
+           Returns:
+               The difference (a - b)
+           """
+           result = subtract(a, b)
+           self.history.append(f"{a} - {b} = {result}")
+           return result
        
        def multiply(self, a, b):
-           """Multiply two numbers and return the result."""
-           return a * b
+           """
+           Multiply two numbers and store the operation in history.
+           
+           Args:
+               a: First number
+               b: Second number
+               
+           Returns:
+               The product of a and b
+           """
+           result = multiply(a, b)
+           self.history.append(f"{a} * {b} = {result}")
+           return result
        
        def divide(self, a, b):
            """
-           Divide a by b and return the result.
+           Divide a by b and store the operation in history.
            
            Args:
-               a: The dividend
-               b: The divisor
+               a: Numerator
+               b: Denominator
                
            Returns:
                The quotient a/b
@@ -171,99 +283,103 @@ Writing clean, readable code is essential for collaboration and maintenance. Pyt
            Raises:
                ZeroDivisionError: If b is 0
            """
-           if b == 0:
-               raise ZeroDivisionError("Cannot divide by zero")
-           return a / b
-   
-   # Example usage
-   if __name__ == "__main__":
-       calc = Calculator()
-       print(calc.add(5, 3))       # 8
-       print(calc.subtract(5, 3))  # 2
-       print(calc.multiply(5, 3))  # 15
-       print(calc.divide(6, 3))    # 2.0
-   ```
-
-2. Run pylint on this file:
-   ```bash
-   pylint calculator.py
-   ```
-
-3. Note the score. Is it better than `bad_code.py`? Why?
-
-### Task 4.2: Enhancing the Calculator
-
-1. Modify `calculator.py` to add at least two new methods:
-   - `power(a, b)` - Returns a raised to the power of b
-   - `remainder(a, b)` - Returns the remainder when a is divided by b
-
-2. Ensure your additions maintain good code quality.
-
-3. Run pylint again to verify your score remains high.
-
-## Part 5: Customizing Pylint
-
-### Task 5.1: Configure Pylint
-
-1. Edit the `.pylintrc` file to:
-   - Change the maximum line length to 100
-   - Disable the "missing-module-docstring" warning
-   - Enable the "bad-whitespace" warning
-
-2. Run pylint on your files again with the updated configuration:
-   ```bash
-   pylint --rcfile=.pylintrc calculator.py
-   ```
-
-3. Note any differences in the output.
-
-### Task 5.2: Inline Control
-
-1. Create a file named `inline_control.py` with the following content:
-
-   ```python
-   # This file demonstrates inline pylint controls
-   
-   # pylint: disable=invalid-name
-   x = 10  # This would normally trigger a naming warning
-   
-   def some_function():
-       """Demonstrate pylint inline control."""
-       # pylint: disable=unused-variable
-       unused = "This won't trigger a warning"
+           result = divide(a, b)
+           self.history.append(f"{a} / {b} = {result}")
+           return result
        
-       # pylint: enable=unused-variable
-       unused2 = "This would trigger a warning"
-       
-       return "Done"
-   
-   print(some_function())
+       def get_history(self):
+           """
+           Return the calculation history.
+           
+           Returns:
+               A list of strings representing the calculation history
+           """
+           return self.history
    ```
 
-2. Run pylint on this file:
+2. Run pylint on the new file:
    ```bash
-   pylint inline_control.py
+   pylint --rcfile=.pylintrc src/calculator/calculator.py
    ```
 
-3. Note which warnings appear and which don't.
+## Part 5: VS Code Integration
+
+### Task 5.1: Configuring VS Code for Pylint
+
+1. Open your project in VS Code.
+
+2. Create a `.vscode/settings.json` file:
+   ```json
+   {
+       "python.linting.enabled": true,
+       "python.linting.pylintEnabled": true,
+       "python.linting.pylintArgs": [
+           "--rcfile=.pylintrc"
+       ],
+       "editor.formatOnSave": true,
+       "python.formatting.provider": "black"
+   }
+   ```
+
+3. Install Black for formatting (optional):
+   ```bash
+   pip install black
+   ```
+
+4. Open a Python file and see linting in action in the editor.
+
+## Common Pitfalls
+
+- **Ignoring warnings**: Warnings often indicate real issues that should be fixed
+- **Over-suppressing rules**: Use disable comments sparingly and with good reason
+- **Inconsistent formatting**: Use a code formatter like Black to maintain consistency
+- **Missing docstrings**: Always include docstrings for modules, classes, and functions
+- **Focusing only on the score**: The specific issues are more important than the numeric score
+
+## Troubleshooting
+
+### Issue: "No module named 'calculator'"
+
+**Solution:**
+- Make sure you've installed your package in development mode:
+  ```bash
+  pip install -e .
+  ```
+- Check that your import statements match your directory structure
+
+### Issue: VS Code not showing pylint errors
+
+**Solution:**
+- Check that the Python extension is installed
+- Verify that the selected interpreter is from your virtual environment
+- Make sure pylint is installed in your virtual environment
+
+## What Success Looks Like
+
+By the end of this assignment, you should have:
+- A calculator project with high code quality (pylint score of 9.0+)
+- Well-documented code with proper docstrings
+- A custom pylint configuration
+- VS Code integration for continuous code quality feedback
+- A solid understanding of PEP 8 and Python coding standards
+
+## Self-Assessment Questions
+
+1. Why is code quality important in professional software development?
+2. What are the key principles of PEP 8?
+3. How does pylint help enforce coding standards?
+4. What's the difference between style conventions and actual code errors?
+5. How would you customize pylint for different types of projects?
+6. How does maintaining good code quality help with team collaboration?
 
 ## Submission Requirements
 
-Submit the following files:
+Submit the following:
 
-1. `bad_code.py` - The original problematic code
-2. `good_code.py` - Your improved version
-3. `pylint_issues.txt` - Your analysis of pylint issues
-4. `calculator.py` - The enhanced calculator with new methods
-5. `.pylintrc` - Your customized pylint configuration
-6. A screenshot showing the pylint scores for each of your Python files
-
-Also, answer these questions in a file named `reflection.txt`:
-
-1. How does following PEP 8 and using pylint improve code quality?
-2. What was the most surprising or interesting pylint warning you encountered?
-3. In what ways might pylint's recommendations be limiting or problematic?
-4. How would you integrate pylint into a team development workflow?
+1. Your improved calculator code with high pylint scores
+2. Your `.pylintrc` configuration file
+3. A `pylint_issues.txt` file documenting the issues you found and fixed
+4. A brief reflection (300-500 words) on how code quality practices benefit software development
 
 ## Additional Resources
 
@@ -271,3 +387,4 @@ Also, answer these questions in a file named `reflection.txt`:
 - [Pylint User Manual](http://pylint.pycqa.org/en/latest/)
 - [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
 - [Real Python: Linting Python Code](https://realpython.com/python-code-quality/)
+- [Effective Python: 90 Specific Ways to Write Better Python](https://effectivepython.com/)
