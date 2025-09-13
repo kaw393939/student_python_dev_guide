@@ -23,10 +23,11 @@ Before virtual environments existed, Python developers faced significant challen
 The `virtualenv` tool was created in 2007 by Ian Bicking to solve these problems. Later, Python 3.3+ integrated this functionality directly as the `venv` module, making environment isolation a standard practice.
 
 ## Prerequisites
-- Python 3.6+ installed on your system
-- Terminal/Command Prompt access
-- VS Code (recommended)
-- No prior experience with virtual environments required
+- Completion of Assignment 0: Professional Development Environment Setup
+- Python 3.8+ installed and configured
+- VS Code with Python extensions installed
+- Git properly configured
+- Terminal/Command Prompt access and basic familiarity
 
 ## Time to Complete
 Expect to spend approximately 2-3 hours on this assignment.

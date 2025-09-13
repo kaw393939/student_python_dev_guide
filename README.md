@@ -12,12 +12,16 @@ After completing this guide, you will be able to:
 - Implement professional Git workflows for version control
 - Configure continuous integration pipelines with GitHub Actions
 - Use VS Code effectively for Python development
+- Manage modern configuration, logging, and secrets
+- Package and distribute Python applications professionally
+- Deploy applications to production with monitoring
 
 ## Documentation
 
 This repository contains detailed documentation organized into the following sections:
 
 - [📚 Project Documentation Home](docs/README.md) - Start here for an overview of all documentation
+- [🎯 Introduction and Concepts](docs/00-introduction-and-concepts.md) - Professional development mindset and fundamental concepts
 - [🚀 Project Setup](docs/01-project-setup.md) - Step-by-step instructions for setting up Python virtual environments and managing dependencies
 - [⚙️ Development Workflow](docs/02-development-workflow.md) - Best practices for writing, organizing, and maintaining Python code
 - [🧪 Testing with pytest](docs/03-testing.md) - How to write effective tests and implement test-driven development
@@ -25,34 +29,55 @@ This repository contains detailed documentation organized into the following sec
 - [🔄 Automation with GitHub Actions](docs/05-github-actions.md) - Setting up continuous integration pipelines for your projects
 - [💻 VS Code Integration](docs/06-vscode-setup.md) - Setting up VS Code for Python development across Windows, macOS, and Linux
 - [📝 Git Best Practices](docs/07-git-best-practices.md) - Professional Git workflows including atomic commits and branching strategies
+- [⚙️ Configuration Management](docs/08-configuration-management.md) - Modern configuration patterns, environment variables, and secrets management
 
 ## The Python Calculator Project
 
-Throughout the assignments in this guide, you'll build a professional-grade calculator application in Python. While the calculator itself is simple, you'll apply industry-standard practices to its development:
+Throughout the assignments in this guide, you'll build a professional-grade calculator application that evolves from simple functions to a complete production-ready system. This progression demonstrates how modern software is developed:
 
+**Foundation Setup (Assignment 0):**
+- Professional development environment and mindset establishment
+- Essential tool configuration and workflow foundation
+
+**Foundation Assignments (1-4):**
 - Setting up proper development environments
 - Implementing test-driven development
 - Ensuring code quality through linting
 - Using professional Git workflows
-- Implementing continuous integration
 
-This approach mirrors real-world software development, where even simple applications benefit from professional practices. The simplicity of the calculator allows you to focus on mastering the tools and workflows rather than complex application logic.
+**Professional Development (Assignments 5-8):**
+- Implementing continuous integration and deployment
+- Modern configuration management and secrets handling
+- Python packaging and distribution to PyPI
+- Production deployment with containerization and monitoring
+
+By the end, you'll have a fully functional calculator with basic and scientific operations, memory management, a command-line interface, web API, comprehensive testing, CI/CD pipeline, and production deployment capabilities.
 
 ## Progressive Learning Path
 
-The assignments in this guide follow a deliberate progression that mirrors professional development workflows:
+The assignments follow a deliberate progression that mirrors complete professional software development lifecycles:
 
-1. **Environment Setup** → Create the foundation for development with virtual environments and package management
-2. **Code Quality** → Implement quality standards before expanding functionality
-3. **Testing** → Ensure reliability through automated tests
-4. **Version Control** → Manage changes professionally and collaborate effectively
+0. **Environment Setup** → Professional development environment and mindset
+1. **Environment Management** → Virtual environments and dependency management
+2. **Code Quality** → Professional coding standards and documentation
+3. **Testing** → Test-driven development and automated testing
+4. **Version Control** → Professional Git workflows and collaboration
+5. **CI/CD** → Automated testing, security scanning, and deployment
+6. **Configuration** → Environment management, logging, and secrets
+7. **Packaging** → Modern Python packaging and PyPI distribution
+8. **Deployment** → Production-ready deployment with monitoring
 
-Each assignment builds directly on the previous one, with the calculator project growing more robust at each step.
+Each assignment builds directly on the previous one, creating a complete software development journey from initial setup to production deployment.
 
 ## Hands-on Assignments
 
 The best way to learn is by doing! Complete these practical assignments to build real-world skills:
 
+**Foundation Setup:**
+- [**Assignment 0: Professional Development Environment Setup**](assignments/00-environment-setup.md) (3-4 hours)  
+  Set up your complete professional development environment, configure essential tools, and establish professional workflows and mindset.
+
+**Foundation Assignments (1-4):**
 - [**Assignment 1: Virtual Environments and Pip**](assignments/01-virtual-env-pip.md) (2-3 hours)  
   Set up your development environment and create the basic calculator structure with addition and subtraction operations.
 
@@ -64,6 +89,19 @@ The best way to learn is by doing! Complete these practical assignments to build
 
 - [**Assignment 4: Professional Git Workflows**](assignments/04-git-workflows.md) (3-4 hours)  
   Use Git branching strategies to implement scientific calculator features (square root, power, etc.) and manage the project professionally.
+
+**Professional Development Assignments (5-8):**
+- [**Assignment 5: CI/CD with GitHub Actions**](assignments/05-cicd-github-actions.md) (3-4 hours)  
+  Implement automated testing, security scanning, and deployment pipelines using GitHub Actions.
+
+- [**Assignment 6: Configuration Management**](assignments/06-configuration-management.md) (3-4 hours)  
+  Add professional configuration management, environment-specific settings, logging, and secrets management.
+
+- [**Assignment 7: Python Packaging and Distribution**](assignments/07-packaging-distribution.md) (3-4 hours)  
+  Package your calculator for distribution with modern pyproject.toml, publish to PyPI, and create command-line interfaces.
+
+- [**Assignment 8: CLI Interface and Production Deployment**](assignments/08-cli-deployment.md) (4-5 hours)  
+  Build advanced CLI features, containerize with Docker, implement monitoring, and deploy to production environments.
 
 Each assignment includes detailed instructions, example code, and reflection questions to deepen your understanding.
 
@@ -82,6 +120,9 @@ If you're already familiar with some concepts, feel free to jump to specific sec
 1. Already comfortable with virtual environments? Start with [Assignment 2](assignments/02-pylint-code-quality.md).
 2. Know Python and linting already? Jump to [Assignment 3](assignments/03-pytest.md).
 3. Experienced with most tools but want to learn Git workflows? Go straight to [Assignment 4](assignments/04-git-workflows.md).
+4. Ready for advanced topics? Skip to [Assignment 5](assignments/05-cicd-github-actions.md) for CI/CD.
+5. Want to learn modern packaging? Jump to [Assignment 7](assignments/07-packaging-distribution.md).
+6. Interested in production deployment? Go to [Assignment 8](assignments/08-cli-deployment.md).
 
 ## Who This Guide Is For
 
@@ -104,9 +145,14 @@ Consider keeping a learning journal as you work through these assignments to tra
 
 By the end of this guide, you will have:
 - A fully functional calculator application with basic and scientific operations
+- A professional command-line interface with interactive and batch modes
+- A web API with health checks and monitoring capabilities
 - A clean, well-documented codebase that passes industry-standard quality checks
-- A comprehensive test suite with high coverage
-- A professional Git history showing your development process
+- A comprehensive test suite with high coverage and performance benchmarks
+- Modern configuration management with environment-specific settings
+- A distributable Python package published to PyPI
+- Production-ready deployment with Docker containerization
+- Complete CI/CD pipeline with automated testing and security scanning
 - Hands-on experience with the same workflows used in professional software teams
 
 ## Common Pitfalls to Avoid
@@ -153,7 +199,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-For detailed setup instructions, see our [Project Setup Guide](docs/01-project-setup.md) and [VS Code Integration Guide](docs/06-vscode-setup.md).
+For detailed setup instructions, see our [Assignment 0: Environment Setup](assignments/00-environment-setup.md), [Project Setup Guide](docs/01-project-setup.md) and [VS Code Integration Guide](docs/06-vscode-setup.md).
 
 ## Purpose
 

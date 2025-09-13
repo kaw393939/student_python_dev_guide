@@ -145,3 +145,50 @@
 
 **lock file**
 : A file that records the exact versions of all dependencies to ensure reproducible installations.
+
+## Configuration Management
+
+**Environment Variables**
+: Key-value pairs stored outside the application code that configure application behavior, commonly used for settings that vary between environments.
+
+**Configuration File**
+: A file (TOML, YAML, JSON, INI) that contains application settings and can be modified without changing the code.
+
+**pyproject.toml**
+: A configuration file that follows PEP 518 standards for modern Python project configuration, replacing setup.py and consolidating tool configurations.
+
+**Secrets Management**
+: The practice of securely storing and accessing sensitive information like API keys, passwords, and tokens.
+
+**Environment-specific Configuration**
+: Different configuration values for different deployment environments (development, testing, production).
+
+## Containerization
+
+**Docker**
+: A platform that packages applications and their dependencies into lightweight, portable containers.
+
+**Container**
+: A standardized unit of software that packages code and all its dependencies so the application runs quickly and reliably across computing environments.
+
+**Dockerfile**
+: A text file containing instructions for building a Docker image, specifying the base image, dependencies, and configuration.
+
+**Docker Compose**
+: A tool for defining and running multi-container Docker applications using a YAML file.
+
+## Security
+
+**Dependency Scanning**
+: The process of analyzing project dependencies for known security vulnerabilities.
+
+**pip-audit**
+: Official Python tool for scanning installed packages for known security vulnerabilities.
+
+**Bandit**
+: A security linter for Python that identifies common security issues in code.
+
+**CodeQL**
+: GitHub's semantic code analysis engine for finding security vulnerabilities and code quality issues.
+
+```

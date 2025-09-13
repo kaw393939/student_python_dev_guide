@@ -147,11 +147,131 @@ requests>=2.28.1,<2.30.0
 requests!=2.29.0
 ```
 
+### Dependency Security
+
+Modern development requires attention to dependency security:
+
+#### Security Scanning Tools
+
+1. **pip-audit**: Official tool for scanning Python packages for known vulnerabilities
+   ```bash
+   # Install pip-audit
+   pip install pip-audit
+   
+   # Scan your current environment
+   pip-audit
+   
+   # Scan a requirements file
+   pip-audit -r requirements.txt
+   ```
+
+2. **Safety**: Alternative security scanner
+   ```bash
+   pip install safety
+   safety check
+   ```
+
+#### Security Best Practices
+
+- **Regular updates**: Keep dependencies updated, but test thoroughly
+- **Pinned versions**: Use exact versions in production for reproducibility
+- **Minimal dependencies**: Only include packages you actually need
+- **Monitor advisories**: Subscribe to security advisories for your dependencies
+- **Lock files**: Use tools like `pip-tools` to generate lock files with exact versions
+
+#### Generating Lock Files with pip-tools
+
+```bash
+# Install pip-tools
+pip install pip-tools
+
+# Create requirements.in with your direct dependencies
+echo "requests>=2.28.0" > requirements.in
+
+# Generate pinned requirements.txt
+pip-compile requirements.in
+
+# Install from the lock file
+pip-sync requirements.txt
+```
+
 ### Creating a requirements.txt File
 
 ```bash
 # Generate requirements.txt from your current environment
 pip freeze > requirements.txt
+```
+
+### Modern Python Packaging with pyproject.toml
+
+While `setup.py` and `requirements.txt` are still widely used, modern Python projects increasingly use `pyproject.toml` for configuration. This file follows the PEP 518 standard and provides a more declarative approach to project configuration.
+
+#### Creating a pyproject.toml File
+
+```toml
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculator"
+version = "0.1.0"
+description = "A simple calculator for learning Python development practices"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    # Runtime dependencies go here
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pylint>=2.15.0",
+    "black>=22.8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=src --cov-report=html --cov-report=term"
+
+[tool.pylint.main]
+py-version = "3.8"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+```
+
+#### Benefits of pyproject.toml
+
+- **Single configuration file**: Replaces multiple configuration files
+- **Tool configuration**: Can configure pytest, pylint, black, and other tools
+- **PEP 517/518 compliance**: Modern Python packaging standard
+- **Better dependency management**: Separates runtime and development dependencies
+
+#### Installing with pyproject.toml
+
+```bash
+# Install the project in development mode
+pip install -e .
+
+# Install with development dependencies
+pip install -e ".[dev]"
 ```
 
 ### Deactivating the Virtual Environment
@@ -274,6 +394,106 @@ When your code works locally but fails in production:
 3. **Compare environments**: Use `pip list` in both environments and compare outputs
 4. **Check Python versions**: Ensure versions match using `python --version`
 5. **Consider containerization**: Use Docker to ensure environment consistency
+
+### Introduction to Containerization
+
+Containers solve the "it works on my machine" problem by packaging your application with all its dependencies and runtime environment.
+
+#### Why Containers Matter
+
+- **Consistency**: Same environment across development, testing, and production
+- **Isolation**: Applications don't interfere with each other
+- **Portability**: Run anywhere that supports containers
+- **Reproducibility**: Exact same environment every time
+
+#### Docker Basics for Python Projects
+
+Docker is the most popular containerization platform. Here's a simple Dockerfile for a Python project:
+
+```dockerfile
+# Dockerfile
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first (for better caching)
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+# Install the application
+RUN pip install -e .
+
+# Set the default command
+CMD ["python", "-m", "calculator"]
+```
+
+#### Using Docker Compose for Development
+
+Docker Compose simplifies multi-container applications:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  calculator:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app/src
+      - DEBUG=True
+    ports:
+      - "8000:8000"
+    
+  test:
+    build: .
+    command: pytest
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app/src
+```
+
+#### Basic Docker Commands
+
+```bash
+# Build the image
+docker build -t calculator:latest .
+
+# Run the container
+docker run -it calculator:latest
+
+# Run with volume mounting for development
+docker run -it -v $(pwd):/app calculator:latest
+
+# Using Docker Compose
+docker-compose up --build
+docker-compose run test
+```
+
+#### When to Consider Containerization
+
+- **Team consistency**: Multiple developers need identical environments
+- **Complex dependencies**: System-level dependencies beyond Python packages
+- **Production deployment**: Ensuring production matches development
+- **CI/CD pipelines**: Consistent test environments
+- **Microservices**: When building distributed applications
+
+#### Container Best Practices
+
+- **Multi-stage builds**: Separate build and runtime environments
+- **Minimal base images**: Use slim or alpine variants
+- **Security scanning**: Scan images for vulnerabilities
+- **Layer optimization**: Order Dockerfile commands for optimal caching
+- **Non-root users**: Don't run containers as root in production
 
 ## Troubleshooting Common Issues
 
